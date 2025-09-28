@@ -1,22 +1,39 @@
-<script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
-import axios from "axios";
-</script>
-
 <template>
   <header>
     <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
 
-    <div class="wrapper">
-      <HelloWorld msg="You dEEd it!" />
-    </div>
   </header>
 
-  <main>
-    <TheWelcome />
-  </main>
 </template>
+
+<script lang="ts">
+  import axios from "axios";
+  import REQUEST_PARAMS from "./request_params.ts";
+
+export default {
+  name: "App",
+  data() {
+    return {
+      wxData: null,
+    };
+  },
+  mounted() {
+    this.getWxData();
+    console.log(REQUEST_PARAMS)
+  },
+  methods: {
+    async getWxData() {
+      try {
+        const response = await axios(REQUEST_PARAMS);
+        console.log(response)
+        //this.weatherData = response.data;
+      } catch (error) {
+        console.error("Error fetching weather data:", error);
+      }
+    }
+  }
+}
+</script>
 
 <style scoped>
 header {
