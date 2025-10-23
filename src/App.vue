@@ -6,7 +6,7 @@
         <div class="params_block_wrapper">
           <div class="params_block">
             <div class="temp-box">
-              <div class="text-small">
+              <div class="text-small text-white">
                 {{ _t('Temperature') }}
               </div>
               <div class="wx_parameter">
@@ -17,7 +17,7 @@
               </div>
             </div>
             <div class="temp-box">
-              <div class="text-small">
+              <div class="text-small text-white">
                 {{ _t('Humidity') }}
               </div>
               <div class="wx_parameter">
@@ -152,16 +152,19 @@
 <script lang="ts">
   import axios from "axios";
   import REQUEST_PARAMS from "./request_params.ts";
+  import TRANSLATIONS from "./translations.ts";
 
 export default {
   name: "App",
   data() {
     return {
       wxData: null,
+      language: 'en-US'
     };
   },
   mounted() {
     this.getWxData();
+    this.language = window.navigator.language;
   },
   methods: {
     async getWxData() {
@@ -173,7 +176,11 @@ export default {
       }
     },
     _t(text) {
-      return(text);
+      let current = TRANSLATIONS[this.language];
+      if (typeof current !== 'undefined') {
+        return current[text] ?? text;
+      }
+      return text;
     }
   },
   computed: {

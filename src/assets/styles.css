@@ -121,6 +121,10 @@ body {
     margin-right: 5px;
 }
 
+.text-white {
+    color: rgb(255, 255, 255);
+}
+
 .align-center {
     align-content: center;
 }
