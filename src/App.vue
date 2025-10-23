@@ -111,7 +111,7 @@
         <div class="params_block_wrapper">
           {{ _t('Wind') }}
           <div class="params_block">
-            <div class="temp-box align-center">
+            <div class="temp-box">
               <div class="text-small">
                 {{ _t('Speed') }}
               </div>
@@ -122,11 +122,9 @@
                 </span>
               </div>
             </div>
-            <div class="temp-box">
-              <div class="text-small">
-                {{ _t('Direction') }}
-              </div>
-              <div class="wx_parameter">
+            <div class="temp-box" v-if="!!wind_arrow_style">
+              <div class="wind-arrow" :style="wind_arrow_style"></div>
+              <div class="wx_parameter" style="position:relative;top:-90px;">
                 {{ wind_direction }}
                 <span class="text-unit">
                   {{ wind_direction_unit }}
@@ -245,6 +243,12 @@ export default {
       return this.wind_speed !== null ? 
         this._t(this.wxData?.wind?.wind_speed?.unit) : 
         null;
+    },
+    wind_arrow_style() {
+      if (Boolean(this.wind_speed * 1)) {
+        return 'transform:rotate(' + this.wind_direction + 'deg)';
+      }
+      return null;
     }
   }
 }

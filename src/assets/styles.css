@@ -150,3 +150,29 @@ body {
 .test {
     min-width: 100%;
 }
+
+.wind-arrow {
+    position: relative;
+    background-attachment: scroll;
+    background-clip: border-box;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url('wind_arrow.png');
+    background-origin:padding-box;
+    background-position-x: 0%;
+    background-position-y: 0%;
+    background-repeat:no-repeat;
+    background-size:100%;
+    box-sizing:border-box;
+    color:rgb(159, 160, 163);
+    display: inline-flex;
+    font-size:14px;
+    height: 120px;
+    line-height: 21px;
+    margin: 0px;
+    padding: 0px;
+
+    text-size-adjust: 100%;
+    width: 120px;
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
