@@ -1,0 +1,152 @@
+/* styles.css */
+@import url(
+'https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+@import url(
+'https://fonts.googleapis.com/css2?family=Orbitron:wght@300;700&display=swap');
+
+/* General Styles */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f8fafa;
+    color: #333;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* Header */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.header h1 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2.5rem;
+    color: #2b6cb0;
+    margin: 0;
+}
+
+/* Search Bar */
+.search-bar {
+    display: flex;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.search-input {
+    font-size: 1rem;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 0.25rem;
+    background-color: #f5f5f5;
+    width: 60%;
+    margin-right: 1rem;
+}
+
+.search-button {
+    font-size: 1rem;
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    border-radius: 0.25rem;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.search-button:hover {
+    background-color: #357dbf;
+}
+
+/* Weather Widget */
+.weather {
+    text-align: center;
+    color: #fff;
+    margin-bottom: 3rem;
+    padding: 2rem;
+    background-color: rgb(43, 46, 53);
+    border-radius: 1rem;
+    box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.1);
+}
+
+.weather h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 1px;
+}
+
+.params_block_wrapper {
+    border: 2px solid rgba(141, 172, 45, 0.2);
+}
+
+.params_block {
+    display: grid;
+    grid-template-columns: auto-fill;
+    grid-auto-flow: column;
+    padding: 4px;
+    margin: 0 1px;
+}
+
+.wx_parameter {
+    font-size: 35px;
+    font-weight: 700;
+    height: auto;
+    line-height: 52.5px;
+}
+
+.text-small {
+    color: rgb(159, 160, 163);
+}
+
+.text-green {
+    color: rgb(141, 172, 45);
+    float: right;
+    margin-right: 5px;
+}
+
+.align-center {
+    align-content: center;
+}
+.text-unit {
+    font-size: 14px;
+    line-height: 28px;
+    color: rgb(159, 160, 163);
+    vertical-align: text-top;
+}
+
+.time {
+    font-size: 1.2rem;
+    color: #4a90e2;
+    margin-bottom: 0.5rem;
+}
+
+.temp-max,
+.temp-min {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+}
+
+.desc {
+    color: #555;
+}
+
+.test {
+    min-width: 100%;
+}

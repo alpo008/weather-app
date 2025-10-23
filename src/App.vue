@@ -1,9 +1,154 @@
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-
-  </header>
-
+  <main class="main-section">
+    <div class="weather">
+      <h2>test 111</h2>
+      <div class="wrapper">
+        <div class="params_block_wrapper">
+          <div class="params_block">
+            <div class="temp-box">
+              <div class="text-small">
+                {{ _t('Temperature') }}
+              </div>
+              <div class="wx_parameter">
+                {{ temperature }} 
+                <span class="text-unit">
+                  {{ temperature_unit }}
+                </span>
+              </div>
+            </div>
+            <div class="temp-box">
+              <div class="text-small">
+                {{ _t('Humidity') }}
+              </div>
+              <div class="wx_parameter">
+                {{ humidity }} 
+                <span class="text-unit">
+                  {{ humidity_unit }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="params_block_wrapper">
+          {{ _t('Pressure') }}
+          <div class="params_block">
+            <div class="temp-box">
+              <div class="text-small">
+                {{ _t('Absolute') }}
+              </div>
+              <div class="wx_parameter">
+                {{ pressure_abs }}
+                <span class="text-unit">
+                  {{ pressure_unit }}
+                </span>
+              </div>
+            </div>
+            <div class="temp-box">
+              <div class="text-small">
+                {{ _t('Relative') }}
+              </div>
+              <div class="wx_parameter">
+                {{ pressure_rel }}
+                <span class="text-unit">
+                  {{ pressure_unit }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+         <div class="params_block_wrapper">
+          {{ _t('Rain') }}
+          <div class="params_block">
+            <div class="temp-box">
+              <div class="text-small">
+                {{ _t('Per hour') }}
+              </div>
+              <div class="wx_parameter">
+                {{ rain_hour }} 
+                <span class="text-unit">
+                  {{ rain_unit }}
+                </span>
+              </div>
+              <div class="text-small">
+                {{ _t('Per day') }}
+              </div>
+              <div class="wx_parameter">
+                {{ rain_day }} 
+                <span class="text-unit">
+                  {{ rain_unit }}
+                </span>
+              </div>
+            </div>
+            <div class="temp-box align-center">
+              <div class="text-small">
+                {{ _t('Event') }} <span class="text-green">
+                  {{ rain_event }} {{ rain_unit }}
+                </span>
+              </div>
+              <div class="text-small">
+                {{ _t('Hourly') }} <span class="text-green">
+                  {{ rain_hour }} {{ rain_unit }}
+                </span>
+              </div>
+              <div class="text-small">
+                {{ _t('Weekly') }} <span class="text-green">
+                  {{ rain_week }} {{ rain_unit }}
+                </span>
+              </div>
+              <div class="text-small">
+                {{ _t('Monthly') }} <span class="text-green">
+                  {{ rain_month }} {{ rain_unit }}
+                </span>
+              </div>
+              <div class="text-small">
+                {{ _t('Yearly') }} <span class="text-green">
+                  {{ rain_year }} {{ rain_unit }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="params_block_wrapper">
+          {{ _t('Wind') }}
+          <div class="params_block">
+            <div class="temp-box align-center">
+              <div class="text-small">
+                {{ _t('Speed') }}
+              </div>
+              <div class="wx_parameter">
+                {{ wind_speed }}
+                <span class="text-unit">
+                  {{ wind_speed_unit }}
+                </span>
+              </div>
+            </div>
+            <div class="temp-box">
+              <div class="text-small">
+                {{ _t('Direction') }}
+              </div>
+              <div class="wx_parameter">
+                {{ wind_direction }}
+                <span class="text-unit">
+                  {{ wind_direction_unit }}
+                </span>
+              </div>
+            </div>
+            <div class="temp-box">
+              <div class="text-small">
+                {{ _t('Gust') }}
+              </div>
+              <div class="wx_parameter">
+                {{ wind_gust }}
+                <span class="text-unit">
+                  {{ wind_speed_unit }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
 </template>
 
 <script lang="ts">
@@ -19,17 +164,87 @@ export default {
   },
   mounted() {
     this.getWxData();
-    console.log(REQUEST_PARAMS)
   },
   methods: {
     async getWxData() {
       try {
         const response = await axios(REQUEST_PARAMS);
-        console.log(response)
-        //this.weatherData = response.data;
+        this.wxData = response.data.data;
       } catch (error) {
         console.error("Error fetching weather data:", error);
       }
+    },
+    _t(text) {
+      return(text);
+    }
+  },
+  computed: {
+    temperature() {
+      return this.wxData?.outdoor?.app_temp?.value ?? null;
+    },
+    temperature_unit() {
+      return this.temperature !== null ? 
+        this._t(this.wxData?.outdoor?.app_temp?.unit) : 
+        null;
+    },
+    pressure_abs() {
+      return this.wxData?.pressure?.absolute?.value ?? null;
+    },
+    pressure_rel() {
+      return this.wxData?.pressure?.relative?.value ?? null;
+    },
+    pressure_unit() {
+      return this.pressure_abs !== null ? 
+        this._t(this.wxData?.pressure?.absolute?.unit) : 
+        null;
+    },
+    humidity() {
+      return this.wxData?.outdoor?.humidity?.value ?? null;
+    },
+    humidity_unit() {
+      return this.humidity !== null ? 
+        this._t(this.wxData?.outdoor?.humidity?.unit) : 
+        null;
+    },
+    rain_hour() {
+      return this.wxData?.rainfall['1_hour']?.value ?? null;
+    },
+    rain_day() {
+      return this.wxData?.rainfall?.daily?.value ?? null;
+    },
+    rain_event() {
+      return this.wxData?.rainfall?.event?.value ?? null;
+    },
+    rain_week() {
+      return this.wxData?.rainfall?.weekly?.value ?? null;
+    },
+    rain_month() {
+      return this.wxData?.rainfall?.monthly?.value ?? null;
+    },
+    rain_year() {
+      return this.wxData?.rainfall?.yearly?.value ?? null;
+    },
+    rain_unit() {
+      return this._t(this.wxData?.rainfall?.daily?.unit ?? null);
+    },
+    wind_direction() {
+      return this.wxData?.wind?.wind_direction?.value ?? null;
+    },
+    wind_gust() {
+      return this.wxData?.wind?.wind_gust?.value ?? null;
+    },
+    wind_speed() {
+      return this.wxData?.wind?.wind_speed?.value ?? null;
+    },
+    wind_direction_unit() {
+      return this.wind_direction !== null ? 
+        this._t(this.wxData?.wind?.wind_direction?.unit) : 
+        null;
+    },
+    wind_speed_unit() {
+      return this.wind_speed !== null ? 
+        this._t(this.wxData?.wind?.wind_speed?.unit) : 
+        null;
     }
   }
 }
