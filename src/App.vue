@@ -1,7 +1,7 @@
 <template>
   <main class="main-section">
     <div class="weather">
-      <h2>test 111</h2>
+      <h2>{{ _t('Our meteostation') }}</h2>
       <div class="wrapper">
         <div class="params_block_wrapper">
           <div class="params_block">
@@ -80,27 +80,28 @@
               </div>
             </div>
             <div class="temp-box align-center">
-              <div class="text-small">
-                {{ _t('Event') }} <span class="text-green">
+              <div class="text-small space-between ml20 ml20">
+                {{ _t('Event') }}
+                 <span class="text-green">
                   {{ rain_event }} {{ rain_unit }}
                 </span>
               </div>
-              <div class="text-small">
+              <div class="text-small space-between ml20">
                 {{ _t('Hourly') }} <span class="text-green">
                   {{ rain_hour }} {{ rain_unit }}
                 </span>
               </div>
-              <div class="text-small">
+              <div class="text-small space-between ml20">
                 {{ _t('Weekly') }} <span class="text-green">
                   {{ rain_week }} {{ rain_unit }}
                 </span>
               </div>
-              <div class="text-small">
+              <div class="text-small space-between ml20">
                 {{ _t('Monthly') }} <span class="text-green">
                   {{ rain_month }} {{ rain_unit }}
                 </span>
               </div>
-              <div class="text-small">
+              <div class="text-small space-between ml20">
                 {{ _t('Yearly') }} <span class="text-green">
                   {{ rain_year }} {{ rain_unit }}
                 </span>
@@ -122,7 +123,7 @@
                 </span>
               </div>
             </div>
-            <div class="temp-box" v-if="!!wind_arrow_style">
+            <div class="temp-box height130" v-if="!!wind_arrow_style">
               <div class="wind-arrow" :style="wind_arrow_style"></div>
               <div class="wx_parameter" style="position:relative;top:-90px;">
                 {{ wind_direction }}

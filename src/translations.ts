@@ -9,6 +9,7 @@ const translations = {
         "mmHg" : "мм рт. ст.",
         "Monthly" : "За месяц",
         "m/s" : "м/с",
+        "Our meteostation" : "Наша метеостанция",
         "Per day" : "За день",
         "Per hour" : "За час",
         "Pressure" : "Давление",
