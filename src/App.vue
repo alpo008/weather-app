@@ -56,7 +56,43 @@
             </div>
           </div>
         </div>
-         <div class="params_block_wrapper">
+        <div class="params_block_wrapper">
+          {{ _t('Wind') }}
+          <div class="params_block">
+            <div class="temp-box">
+              <div class="text-small">
+                {{ _t('Speed') }}
+              </div>
+              <div class="wx_parameter">
+                {{ wind_speed }}
+                <span class="text-unit">
+                  {{ wind_speed_unit }}
+                </span>
+              </div>
+            </div>
+            <div class="temp-box height130" v-if="!!wind_arrow_style">
+              <div class="wind-arrow" :style="wind_arrow_style"></div>
+              <div class="wx_parameter" style="position:relative;top:-90px;">
+                {{ wind_direction }}
+                <span class="text-unit">
+                  {{ wind_direction_unit }}
+                </span>
+              </div>
+            </div>
+            <div class="temp-box">
+              <div class="text-small">
+                {{ _t('Gust') }}
+              </div>
+              <div class="wx_parameter">
+                {{ wind_gust }}
+                <span class="text-unit">
+                  {{ wind_speed_unit }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+                 <div class="params_block_wrapper">
           {{ _t('Rain') }}
           <div class="params_block">
             <div class="temp-box">
@@ -109,42 +145,6 @@
             </div>
           </div>
         </div>
-        <div class="params_block_wrapper">
-          {{ _t('Wind') }}
-          <div class="params_block">
-            <div class="temp-box">
-              <div class="text-small">
-                {{ _t('Speed') }}
-              </div>
-              <div class="wx_parameter">
-                {{ wind_speed }}
-                <span class="text-unit">
-                  {{ wind_speed_unit }}
-                </span>
-              </div>
-            </div>
-            <div class="temp-box height130" v-if="!!wind_arrow_style">
-              <div class="wind-arrow" :style="wind_arrow_style"></div>
-              <div class="wx_parameter" style="position:relative;top:-90px;">
-                {{ wind_direction }}
-                <span class="text-unit">
-                  {{ wind_direction_unit }}
-                </span>
-              </div>
-            </div>
-            <div class="temp-box">
-              <div class="text-small">
-                {{ _t('Gust') }}
-              </div>
-              <div class="wx_parameter">
-                {{ wind_gust }}
-                <span class="text-unit">
-                  {{ wind_speed_unit }}
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   </main>
@@ -176,12 +176,12 @@ export default {
         console.error("Error fetching weather data:", error);
       }
     },
-    _t(text) {
+    _t(txt) {
       let current = TRANSLATIONS[this.language];
       if (typeof current !== 'undefined') {
-        return current[text] ?? text;
+        return current[txt] ?? txt;
       }
-      return text;
+      return txt;
     }
   },
   computed: {
