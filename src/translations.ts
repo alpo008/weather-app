@@ -1,10 +1,14 @@
 const translations = {
     "ru-RU" : {
         "Absolute" : "Абсолютное",
+        "Dew point" : "Точка росы",
         "Event" : "За сегодня",
+        "Feels like" : "Ощущается как",
         "Gust" : "Порывы до",
         "Hourly" : "За сутки",
         "Humidity" : "Влажность",
+        "Illumination" : "Освещенность",
+        "lx" : "люкс",
         "mm" : "мм",
         "mmHg" : "мм рт. ст.",
         "Monthly" : "За месяц",
@@ -16,7 +20,9 @@ const translations = {
         "Rain" : "Дождь",
         "Relative" : "Относительное",
         "Speed" : "Скорость",
+        "Solar and UVI" : "Солнце и УФ",
         "Temperature" : "Температура",
+        "UVI" : "УФ индекс",
         "Weekly" : "За неделю",
         "Wind" : "Ветер",
         "Yearly" : "За год"

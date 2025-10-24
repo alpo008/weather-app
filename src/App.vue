@@ -15,6 +15,12 @@
                   {{ temperature_unit }}
                 </span>
               </div>
+              <div class="text-small">
+                {{ _t('Feels like') }}
+                <span class="text-green">
+                  {{ feels_like }} {{ feels_like_unit }}
+                </span>
+              </div>
             </div>
             <div class="temp-box">
               <div class="text-small text-white">
@@ -24,6 +30,12 @@
                 {{ humidity }} 
                 <span class="text-unit">
                   {{ humidity_unit }}
+                </span>
+              </div>
+              <div class="text-small">
+                {{ _t('Dew point') }}
+                <span class="text-green">
+                  {{ dew_point }} {{ dew_point_unit }}
                 </span>
               </div>
             </div>
@@ -56,6 +68,34 @@
             </div>
           </div>
         </div>
+        <div class="params_block_wrapper">
+          {{ _t('Solar and UVI') }}
+          <div class="params_block">
+            <div class="temp-box">
+              <div class="text-small">
+                {{ _t('Illumination') }}
+              </div>
+              <div class="wx_parameter">
+                {{ solar_rounded.value }}
+                <span class="text-unit">
+                  {{ solar_rounded.unit }}
+                </span>
+              </div>
+            </div>
+            <div class="temp-box">
+              <div class="text-small">
+                {{ _t('UVI') }}
+              </div>
+              <div class="wx_parameter">
+                {{ uvi }}
+                <span class="text-unit">
+                  {{ uvi_unit }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
         <div class="params_block_wrapper">
           {{ _t('Wind') }}
           <div class="params_block">
@@ -92,7 +132,7 @@
             </div>
           </div>
         </div>
-                 <div class="params_block_wrapper">
+        <div class="params_block_wrapper">
           {{ _t('Rain') }}
           <div class="params_block">
             <div class="temp-box">
@@ -146,7 +186,6 @@
           </div>
         </div>
       </div>
-    </div>
   </main>
 </template>
 
@@ -172,6 +211,7 @@ export default {
       try {
         const response = await axios(REQUEST_PARAMS);
         this.wxData = response.data.data;
+            console.log(this.wxData)
       } catch (error) {
         console.error("Error fetching weather data:", error);
       }
@@ -257,7 +297,50 @@ export default {
         return 'transform:rotate(' + this.wind_direction + 'deg)';
       }
       return null;
-    }
+    },
+    solar() {
+      return this.wxData?.solar_and_uvi?.solar?.value ?? null;
+    },
+    solar_unit() {
+      return this.solar !== null ? 
+        this._t(this.wxData?.solar_and_uvi?.solar?.unit) : 
+        null;
+    },
+    uvi() {
+      return this.wxData?.solar_and_uvi?.uvi?.value ?? null;
+    },
+    uvi_unit() {
+      return this.uvi !== null ? 
+        this._t(this.wxData?.solar_and_uvi?.uvi?.unit) : 
+        null;
+    },
+    dew_point() {
+      return this.wxData?.outdoor?.dew_point?.value ?? null;
+    },
+    dew_point_unit() {
+      return this.dew_point !== null ? 
+        this._t(this.wxData?.outdoor?.dew_point?.unit) : 
+        null;
+    },
+    feels_like() {
+      return this.wxData?.outdoor?.feels_like?.value ?? null;
+    },
+    feels_like_unit() {
+      return this.feels_like !== null ? 
+        this._t(this.wxData?.outdoor?.feels_like?.unit) : 
+        null;
+    },
+    solar_rounded() {
+      let result = {
+        value: this.solar,
+        unit: this.solar_unit
+      };
+      if (this.solar > 5000) {
+        result.value = (Math.round(this.solar / 100) / 10),
+        result.unit = 'K' + this.solar_unit;
+      }
+      return result;
+    },
   }
 }
 </script>

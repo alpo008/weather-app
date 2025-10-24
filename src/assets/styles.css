@@ -63,15 +63,21 @@ body {
 .params_block_wrapper {
     border: 2px solid rgba(141, 172, 45, 0.2);
     flex-grow: 1;
-}
+ }
 
 .params_block {
-    display: grid;
-    grid-auto-flow: column;
+    display: flex;
+    flex-wrap: wrap;
     padding: 4px;
     margin: 0 1px;
-min-width: 350px;
-/*        width: 40vw;*/
+    justify-content: space-between;
+    flex-grow: 1;
+}
+
+.temp-box {
+    width: 170px;
+    text-align: center;
+    flex-grow: 1;
 }
 
 .wx_parameter {
