@@ -1,13 +1,14 @@
 <template>
   <main class="main-section">
     <div class="weather">
-      <h2>{{ _t('Our meteostation') }}</h2>
+      <h2>{{ _t('Our meteostation') }}</h2> 
+      {{ _t('Updated at') }} {{ updated_at }}
       <div class="wrapper">
         <div class="params_block_wrapper">
           <div class="params_block">
             <div class="temp-box">
               <div class="text-small text-white">
-                {{ _t('Temperature') }}
+                {{ _t('Temperature') }} {{ timer }}
               </div>
               <div class="wx_parameter">
                 {{ temperature }} 
@@ -200,18 +201,25 @@ export default {
   data() {
     return {
       wxData: null,
-      language: 'en-US'
+      language: 'en-US',
+      timer: '',
+      updated_at: ""
     };
   },
   mounted() {
-    this.getWxData();
     this.language = window.navigator.language;
+    this.getWxData();
+    this.timer = setInterval(this.getWxData, 300000);
+  },
+  beforeDestroy() {
+    clearInterval(this.timer);
   },
   methods: {
     async getWxData() {
       try {
         const response = await axios(REQUEST_PARAMS);
         this.wxData = response.data.data;
+        this.updated_at = new Date().toLocaleTimeString();
       } catch (error) {
         console.error("Error fetching weather data:", error);
       }

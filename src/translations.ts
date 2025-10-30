@@ -22,6 +22,7 @@ const translations = {
         "Speed" : "Скорость",
         "Solar and UVI" : "Солнце и УФ",
         "Temperature" : "Температура",
+        "Updated at" : "Обновлено в",
         "UVI" : "УФ индекс",
         "Weekly" : "За неделю",
         "Wind" : "Ветер",
