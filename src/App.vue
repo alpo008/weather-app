@@ -95,7 +95,7 @@
             </div>
           </div>
         </div>
-    </div>
+      </div>
         <div class="params_block_wrapper">
           {{ _t('Wind') }}
           <div class="params_block">
@@ -112,11 +112,12 @@
             </div>
             <div class="temp-box height130" v-if="!!wind_arrow_style">
               <div class="wind-arrow" :style="wind_arrow_style"></div>
-              <div class="wx_parameter" style="position:relative;top:-90px;">
+              <div class="wx_parameter" style="position:relative;top:-100px;">
                 {{ wind_direction }}
                 <span class="text-unit">
                   {{ wind_direction_unit }}
                 </span>
+                <p class="wind-rumb">{{ wind_rumb }}</p>
               </div>
             </div>
             <div class="temp-box">
@@ -211,7 +212,6 @@ export default {
       try {
         const response = await axios(REQUEST_PARAMS);
         this.wxData = response.data.data;
-            console.log(this.wxData)
       } catch (error) {
         console.error("Error fetching weather data:", error);
       }
@@ -341,6 +341,34 @@ export default {
       }
       return result;
     },
+    wind_rumb() {
+    if (isNaN(this.wind_direction)) {
+      return "";
+    }
+    let rumb = (this.wind_direction / 1) + 11.25;
+    if (rumb > 360) {
+      rumb = rumb - 360;
+    }
+    let rumbs = {
+      0 :'N', 
+      1 : 'NNE', 
+      2 : 'NE', 
+      3 : 'ENE', 
+      4 : 'E', 
+      5 : 'ESE', 
+      6 : 'SE', 
+      7 : 'SSE', 
+      8 : 'S', 
+      9 : 'SSW', 
+      10 : 'SW', 
+      11 : 'WSW', 
+      12 : 'W', 
+      13 : 'WNW', 
+      14 : 'NW', 
+      15 : 'NNW'
+    };
+      return rumbs[Math.floor(rumb / 22.5)];
+    }
   }
 }
 </script>
