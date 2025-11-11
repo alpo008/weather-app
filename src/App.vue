@@ -8,10 +8,10 @@
           <div class="params_block">
             <div class="temp-box">
               <div class="text-small text-white">
-                {{ _t('Temperature') }} {{ timer }}
+                {{ _t('Temperature') }}
               </div>
               <div class="wx_parameter">
-                {{ temperature }} 
+                {{ temperature_out }} 
                 <span class="text-unit">
                   {{ temperature_unit }}
                 </span>
@@ -96,7 +96,6 @@
             </div>
           </div>
         </div>
-      </div>
         <div class="params_block_wrapper">
           {{ _t('Wind') }}
           <div class="params_block">
@@ -188,6 +187,7 @@
           </div>
         </div>
       </div>
+    </div>
   </main>
 </template>
 
@@ -233,12 +233,12 @@ export default {
     }
   },
   computed: {
-    temperature() {
-      return this.wxData?.outdoor?.app_temp?.value ?? null;
+    temperature_out() {
+      return this.wxData?.outdoor?.temperature?.value ?? null;
     },
     temperature_unit() {
-      return this.temperature !== null ? 
-        this._t(this.wxData?.outdoor?.app_temp?.unit) : 
+      return this.temperature_out !== null ? 
+        this._t(this.wxData?.outdoor?.temperature?.unit) : 
         null;
     },
     pressure_abs() {
@@ -350,31 +350,31 @@ export default {
       return result;
     },
     wind_rumb() {
-    if (isNaN(this.wind_direction)) {
-      return "";
-    }
-    let rumb = (this.wind_direction / 1) + 11.25;
-    if (rumb > 360) {
-      rumb = rumb - 360;
-    }
-    let rumbs = {
-      0 :'N', 
-      1 : 'NNE', 
-      2 : 'NE', 
-      3 : 'ENE', 
-      4 : 'E', 
-      5 : 'ESE', 
-      6 : 'SE', 
-      7 : 'SSE', 
-      8 : 'S', 
-      9 : 'SSW', 
-      10 : 'SW', 
-      11 : 'WSW', 
-      12 : 'W', 
-      13 : 'WNW', 
-      14 : 'NW', 
-      15 : 'NNW'
-    };
+      if (isNaN(this.wind_direction)) {
+        return "";
+      }
+      let rumb = (this.wind_direction / 1) + 11.25;
+      if (rumb > 360) {
+        rumb = rumb - 360;
+      }
+      let rumbs = {
+        0 :'N', 
+        1 : 'NNE', 
+        2 : 'NE', 
+        3 : 'ENE', 
+        4 : 'E', 
+        5 : 'ESE', 
+        6 : 'SE', 
+        7 : 'SSE', 
+        8 : 'S', 
+        9 : 'SSW', 
+        10 : 'SW', 
+        11 : 'WSW', 
+        12 : 'W', 
+        13 : 'WNW', 
+        14 : 'NW', 
+        15 : 'NNW'
+      };
       return rumbs[Math.floor(rumb / 22.5)];
     }
   }
