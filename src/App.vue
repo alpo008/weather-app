@@ -1,13 +1,14 @@
 <template>
   <main class="main-section">
     <div class="weather">
-      <h2>{{ _t('Our meteostation') }}</h2> 
-      {{ _t('Updated at') }} {{ updated_at }}
+        <img src="./assets/globus.png" alt="" class ="glogo">
+        <h2>{{ _t('Our meteostation') }}</h2> 
+      {{ _t('Updated at') }} {{ updated_at_formatted }}
       <div class="wrapper">
         <div class="params_block_wrapper">
           <div class="params_block">
             <div class="temp-box">
-              <div class="text-small text-white">
+              <div class="text-small text-bolder">
                 {{ _t('Temperature') }}
               </div>
               <div class="wx_parameter">
@@ -24,7 +25,7 @@
               </div>
             </div>
             <div class="temp-box">
-              <div class="text-small text-white">
+              <div class="text-small text-bolder">
                 {{ _t('Humidity') }}
               </div>
               <div class="wx_parameter">
@@ -43,7 +44,9 @@
           </div>
         </div>
         <div class="params_block_wrapper">
-          {{ _t('Pressure') }}
+          <div class="text-small text-bolder">
+            {{ _t('Pressure') }} 
+          </div>
           <div class="params_block">
             <div class="temp-box">
               <div class="text-small">
@@ -70,7 +73,9 @@
           </div>
         </div>
         <div class="params_block_wrapper">
-          {{ _t('Solar and UVI') }}
+          <div class="text-small text-bolder">
+            {{ _t('Solar and UVI') }}
+          </div>
           <div class="params_block">
             <div class="temp-box">
               <div class="text-small">
@@ -97,7 +102,9 @@
           </div>
         </div>
         <div class="params_block_wrapper">
-          {{ _t('Wind') }}
+          <div class="text-small text-bolder">
+            {{ _t('Wind') }}
+          </div>
           <div class="params_block">
             <div class="temp-box">
               <div class="text-small">
@@ -134,7 +141,9 @@
           </div>
         </div>
         <div class="params_block_wrapper">
-          {{ _t('Rain') }}
+          <div class="text-small text-bolder">
+            {{ _t('Rain') }}
+          </div>
           <div class="params_block">
             <div class="temp-box">
               <div class="text-small">
@@ -221,7 +230,7 @@ export default {
         this.wxData = response.data.data;
         this.updated_at = new Date().toLocaleTimeString();
       } catch (error) {
-        console.error("Error fetching weather data:", error);
+        console.error(this._t('Error fetching weather data:'), error);
       }
     },
     _t(txt) {
@@ -301,7 +310,7 @@ export default {
         null;
     },
     wind_arrow_style() {
-      if (Boolean(this.wind_speed * 1)) {
+      if (Boolean(this.wind_speed * 1) || Boolean(this.wind_gust * 1)) {
         return 'transform:rotate(' + this.wind_direction + 'deg)';
       }
       return null;
@@ -376,6 +385,12 @@ export default {
         15 : 'NNW'
       };
       return rumbs[Math.floor(rumb / 22.5)];
+    },
+    updated_at_formatted() {
+      if (!this.updated_at.length) {
+        return this.updated_at;
+      }
+      return this.updated_at.slice(0, -3);
     }
   }
 }
