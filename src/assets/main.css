@@ -1,15 +1,4 @@
-@import './base.css';
+/*@import './base.css';*/
 @import './styles.css';
 
-#weatherapp {
-  width: 100vw;
-/*  padding: 2rem;*/
-  font-weight: normal;
-}
-
-/*@media (min-width: 1024px) {
-  body {
-    display: flex;
-    place-items: center;
-  }
-}*/
+/*#weatherapp */

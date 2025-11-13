@@ -1,6 +1,6 @@
 <template>
   <main class="main-section">
-    <div class="weather">
+    <div class="weather" :style="toggler_style">
       <h2 @click="start">{{ _t('Our meteostation') }}</h2>
       <div v-if="show"> 
         {{ _t('Updated at') }} {{ updated_at_formatted }}
@@ -402,36 +402,18 @@ export default {
         return this.updated_at;
       }
       return this.updated_at.slice(0, -3);
+    },
+    toggler_style() {
+      if (!this.show) {
+        return 'width: 270px;left: 50%;';
+      } else {
+        return '';
+      }
     }
   }
 }
 </script>
 
 <style scoped>
-header {
-  line-height: 1.5;
-}
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-}
 </style>
