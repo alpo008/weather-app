@@ -43,7 +43,6 @@ body {
     text-align: center;
     color: #fff;
     margin-bottom: 3rem;
-    padding: 2rem;
     background-color: rgb(43, 46, 53);
     border-radius: 1rem;
     box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.1);
@@ -52,6 +51,7 @@ body {
 .weather h2 {
     font-size: 2rem;
     margin-bottom: 1rem;
+    cursor: pointer;
 }
 
 .wrapper {
@@ -89,6 +89,10 @@ body {
 
 .text-small {
     color: rgb(159, 160, 163);
+}
+
+.text-bolder {
+    font-weight: 500;
 }
 
 .text-green {

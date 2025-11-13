@@ -1,187 +1,197 @@
 <template>
   <main class="main-section">
     <div class="weather">
-      <h2>{{ _t('Our meteostation') }}</h2> 
-      {{ _t('Updated at') }} {{ updated_at }}
-      <div class="wrapper">
-        <div class="params_block_wrapper">
-          <div class="params_block">
-            <div class="temp-box">
-              <div class="text-small text-white">
-                {{ _t('Temperature') }}
+      <h2 @click="start">{{ _t('Our meteostation') }}</h2>
+      <div v-if="show"> 
+        {{ _t('Updated at') }} {{ updated_at_formatted }}
+        <div class="wrapper">
+          <div class="params_block_wrapper">
+            <div class="params_block">
+              <div class="temp-box">
+                <div class="text-small text-white text-bolder">
+                  {{ _t('Temperature') }}
+                </div>
+                <div class="wx_parameter">
+                  {{ temperature_out }} 
+                  <span class="text-unit">
+                    {{ temperature_unit }}
+                  </span>
+                </div>
+                <div class="text-small">
+                  {{ _t('Feels like') }}
+                  <span class="text-green">
+                    {{ feels_like }} {{ feels_like_unit }}
+                  </span>
+                </div>
               </div>
-              <div class="wx_parameter">
-                {{ temperature_out }} 
-                <span class="text-unit">
-                  {{ temperature_unit }}
-                </span>
-              </div>
-              <div class="text-small">
-                {{ _t('Feels like') }}
-                <span class="text-green">
-                  {{ feels_like }} {{ feels_like_unit }}
-                </span>
-              </div>
-            </div>
-            <div class="temp-box">
-              <div class="text-small text-white">
-                {{ _t('Humidity') }}
-              </div>
-              <div class="wx_parameter">
-                {{ humidity }} 
-                <span class="text-unit">
-                  {{ humidity_unit }}
-                </span>
-              </div>
-              <div class="text-small">
-                {{ _t('Dew point') }}
-                <span class="text-green">
-                  {{ dew_point }} {{ dew_point_unit }}
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="params_block_wrapper">
-          {{ _t('Pressure') }}
-          <div class="params_block">
-            <div class="temp-box">
-              <div class="text-small">
-                {{ _t('Absolute') }}
-              </div>
-              <div class="wx_parameter">
-                {{ pressure_abs }}
-                <span class="text-unit">
-                  {{ pressure_unit }}
-                </span>
-              </div>
-            </div>
-            <div class="temp-box">
-              <div class="text-small">
-                {{ _t('Relative') }}
-              </div>
-              <div class="wx_parameter">
-                {{ pressure_rel }}
-                <span class="text-unit">
-                  {{ pressure_unit }}
-                </span>
+              <div class="temp-box">
+                <div class="text-small text-white text-bolder">
+                  {{ _t('Humidity') }}
+                </div>
+                <div class="wx_parameter">
+                  {{ humidity }} 
+                  <span class="text-unit">
+                    {{ humidity_unit }}
+                  </span>
+                </div>
+                <div class="text-small">
+                  {{ _t('Dew point') }}
+                  <span class="text-green">
+                    {{ dew_point }} {{ dew_point_unit }}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div class="params_block_wrapper">
-          {{ _t('Solar and UVI') }}
-          <div class="params_block">
-            <div class="temp-box">
-              <div class="text-small">
-                {{ _t('Illumination') }}
-              </div>
-              <div class="wx_parameter">
-                {{ solar_rounded.value }}
-                <span class="text-unit">
-                  {{ solar_rounded.unit }}
-                </span>
-              </div>
+          <div class="params_block_wrapper">
+            <div class="text-small text-white text-bolder">
+              {{ _t('Pressure') }} 
             </div>
-            <div class="temp-box">
-              <div class="text-small">
-                {{ _t('UVI') }}
+            <div class="params_block">
+              <div class="temp-box">
+                <div class="text-small">
+                  {{ _t('Absolute') }}
+                </div>
+                <div class="wx_parameter">
+                  {{ pressure_abs }}
+                  <span class="text-unit">
+                    {{ pressure_unit }}
+                  </span>
+                </div>
               </div>
-              <div class="wx_parameter">
-                {{ uvi }}
-                <span class="text-unit">
-                  {{ uvi_unit }}
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="params_block_wrapper">
-          {{ _t('Wind') }}
-          <div class="params_block">
-            <div class="temp-box">
-              <div class="text-small">
-                {{ _t('Speed') }}
-              </div>
-              <div class="wx_parameter">
-                {{ wind_speed }}
-                <span class="text-unit">
-                  {{ wind_speed_unit }}
-                </span>
-              </div>
-            </div>
-            <div class="temp-box height130" v-if="!!wind_arrow_style">
-              <div class="wind-arrow" :style="wind_arrow_style"></div>
-              <div class="wx_parameter" style="position:relative;top:-100px;">
-                {{ wind_direction }}
-                <span class="text-unit">
-                  {{ wind_direction_unit }}
-                </span>
-                <p class="wind-rumb">{{ wind_rumb }}</p>
-              </div>
-            </div>
-            <div class="temp-box">
-              <div class="text-small">
-                {{ _t('Gust') }}
-              </div>
-              <div class="wx_parameter">
-                {{ wind_gust }}
-                <span class="text-unit">
-                  {{ wind_speed_unit }}
-                </span>
+              <div class="temp-box">
+                <div class="text-small">
+                  {{ _t('Relative') }}
+                </div>
+                <div class="wx_parameter">
+                  {{ pressure_rel }}
+                  <span class="text-unit">
+                    {{ pressure_unit }}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div class="params_block_wrapper">
-          {{ _t('Rain') }}
-          <div class="params_block">
-            <div class="temp-box">
-              <div class="text-small">
-                {{ _t('Per hour') }}
+          <div class="params_block_wrapper">
+            <div class="text-small text-white text-bolder">
+              {{ _t('Solar and UVI') }}
+            </div>
+            <div class="params_block">
+              <div class="temp-box">
+                <div class="text-small">
+                  {{ _t('Illumination') }}
+                </div>
+                <div class="wx_parameter">
+                  {{ solar_rounded.value }}
+                  <span class="text-unit">
+                    {{ solar_rounded.unit }}
+                  </span>
+                </div>
               </div>
-              <div class="wx_parameter">
-                {{ rain_hour }} 
-                <span class="text-unit">
-                  {{ rain_unit }}
-                </span>
-              </div>
-              <div class="text-small">
-                {{ _t('Per day') }}
-              </div>
-              <div class="wx_parameter">
-                {{ rain_day }} 
-                <span class="text-unit">
-                  {{ rain_unit }}
-                </span>
+              <div class="temp-box">
+                <div class="text-small">
+                  {{ _t('UVI') }}
+                </div>
+                <div class="wx_parameter">
+                  {{ uvi }}
+                  <span class="text-unit">
+                    {{ uvi_unit }}
+                  </span>
+                </div>
               </div>
             </div>
-            <div class="temp-box align-center">
-              <div class="text-small space-between ml20 ml20">
-                {{ _t('Event') }}
-                 <span class="text-green">
-                  {{ rain_event }} {{ rain_unit }}
-                </span>
+          </div>
+          <div class="params_block_wrapper">
+            <div class="text-small text-white text-bolder">
+              {{ _t('Wind') }}
+            </div>
+            <div class="params_block">
+              <div class="temp-box">
+                <div class="text-small">
+                  {{ _t('Speed') }}
+                </div>
+                <div class="wx_parameter">
+                  {{ wind_speed }}
+                  <span class="text-unit">
+                    {{ wind_speed_unit }}
+                  </span>
+                </div>
               </div>
-              <div class="text-small space-between ml20">
-                {{ _t('Hourly') }} <span class="text-green">
-                  {{ rain_hour }} {{ rain_unit }}
-                </span>
+              <div class="temp-box height130" v-if="!!wind_arrow_style">
+                <div class="wind-arrow" :style="wind_arrow_style"></div>
+                <div class="wx_parameter" style="position:relative;top:-100px;">
+                  {{ wind_direction }}
+                  <span class="text-unit">
+                    {{ wind_direction_unit }}
+                  </span>
+                  <p class="wind-rumb">{{ wind_rumb }}</p>
+                </div>
               </div>
-              <div class="text-small space-between ml20">
-                {{ _t('Weekly') }} <span class="text-green">
-                  {{ rain_week }} {{ rain_unit }}
-                </span>
+              <div class="temp-box">
+                <div class="text-small">
+                  {{ _t('Gust') }}
+                </div>
+                <div class="wx_parameter">
+                  {{ wind_gust }}
+                  <span class="text-unit">
+                    {{ wind_speed_unit }}
+                  </span>
+                </div>
               </div>
-              <div class="text-small space-between ml20">
-                {{ _t('Monthly') }} <span class="text-green">
-                  {{ rain_month }} {{ rain_unit }}
-                </span>
+            </div>
+          </div>
+          <div class="params_block_wrapper">
+            <div class="text-small text-white text-bolder">
+              {{ _t('Rain') }}
+            </div>
+            <div class="params_block">
+              <div class="temp-box">
+                <div class="text-small">
+                  {{ _t('Per hour') }}
+                </div>
+                <div class="wx_parameter">
+                  {{ rain_hour }} 
+                  <span class="text-unit">
+                    {{ rain_unit }}
+                  </span>
+                </div>
+                <div class="text-small">
+                  {{ _t('Per day') }}
+                </div>
+                <div class="wx_parameter">
+                  {{ rain_day }} 
+                  <span class="text-unit">
+                    {{ rain_unit }}
+                  </span>
+                </div>
               </div>
-              <div class="text-small space-between ml20">
-                {{ _t('Yearly') }} <span class="text-green">
-                  {{ rain_year }} {{ rain_unit }}
-                </span>
+              <div class="temp-box align-center">
+                <div class="text-small space-between ml20 ml20">
+                  {{ _t('Event') }}
+                   <span class="text-green">
+                    {{ rain_event }} {{ rain_unit }}
+                  </span>
+                </div>
+                <div class="text-small space-between ml20">
+                  {{ _t('Hourly') }} <span class="text-green">
+                    {{ rain_hour }} {{ rain_unit }}
+                  </span>
+                </div>
+                <div class="text-small space-between ml20">
+                  {{ _t('Weekly') }} <span class="text-green">
+                    {{ rain_week }} {{ rain_unit }}
+                  </span>
+                </div>
+                <div class="text-small space-between ml20">
+                  {{ _t('Monthly') }} <span class="text-green">
+                    {{ rain_month }} {{ rain_unit }}
+                  </span>
+                </div>
+                <div class="text-small space-between ml20">
+                  {{ _t('Yearly') }} <span class="text-green">
+                    {{ rain_year }} {{ rain_unit }}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -203,13 +213,14 @@ export default {
       wxData: null,
       language: 'en-US',
       timer: '',
-      updated_at: ""
+      updated_at: "",
+      show: false
     };
   },
   mounted() {
     this.language = window.navigator.language;
-    this.getWxData();
-    this.timer = setInterval(this.getWxData, 300000);
+/*    this.getWxData();
+    this.timer = setInterval(this.getWxData, 300000);*/
   },
   beforeDestroy() {
     clearInterval(this.timer);
@@ -221,7 +232,7 @@ export default {
         this.wxData = response.data.data;
         this.updated_at = new Date().toLocaleTimeString();
       } catch (error) {
-        console.error("Error fetching weather data:", error);
+        console.error(this._t('Error fetching weather data:'), error);
       }
     },
     _t(txt) {
@@ -230,7 +241,16 @@ export default {
         return current[txt] ?? txt;
       }
       return txt;
-    }
+    },
+    start() {
+      if (this.show) {
+        clearInterval(this.timer);
+      } else {
+        this.getWxData();
+        this.timer = setInterval(this.getWxData, 300000);
+      }
+      this.show = !this.show;  
+    } 
   },
   computed: {
     temperature_out() {
@@ -301,7 +321,7 @@ export default {
         null;
     },
     wind_arrow_style() {
-      if (Boolean(this.wind_speed * 1)) {
+      if (Boolean(this.wind_speed * 1) || Boolean(this.wind_gust * 1)) {
         return 'transform:rotate(' + this.wind_direction + 'deg)';
       }
       return null;
@@ -376,6 +396,12 @@ export default {
         15 : 'NNW'
       };
       return rumbs[Math.floor(rumb / 22.5)];
+    },
+    updated_at_formatted() {
+      if (!this.updated_at.length) {
+        return this.updated_at;
+      }
+      return this.updated_at.slice(0, -3);
     }
   }
 }

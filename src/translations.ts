@@ -2,6 +2,7 @@ const translations = {
     "ru-RU" : {
         "Absolute" : "Абсолютное",
         "Dew point" : "Точка росы",
+        "Error fetching weather data:" : "Ошибка получения данных:",
         "Event" : "За сегодня",
         "Feels like" : "Ощущается как",
         "Gust" : "Порывы до",
