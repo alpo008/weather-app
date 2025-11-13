@@ -3,7 +3,7 @@
     <div class="weather" :style="toggler_style">
       <h2 @click="start">{{ _t('Our meteostation') }}</h2>
       <div v-if="show"> 
-        {{ _t('Updated at') }} {{ updated_at_formatted }}
+        {{ _t('Updated at') }} {{ updated_at }}
         <div class="wrapper">
           <div class="params_block_wrapper">
             <div class="params_block">
@@ -230,7 +230,11 @@ export default {
       try {
         const response = await axios(REQUEST_PARAMS);
         this.wxData = response.data.data;
-        this.updated_at = new Date().toLocaleTimeString();
+        this.updated_at = new Date().toLocaleTimeString('ru-RU', { 
+          hour: '2-digit', 
+          minute: '2-digit', 
+          hour12: false 
+        });
       } catch (error) {
         console.error(this._t('Error fetching weather data:'), error);
       }
@@ -396,12 +400,6 @@ export default {
         15 : 'NNW'
       };
       return rumbs[Math.floor(rumb / 22.5)];
-    },
-    updated_at_formatted() {
-      if (!this.updated_at.length) {
-        return this.updated_at;
-      }
-      return this.updated_at.slice(0, -3);
     },
     toggler_style() {
       if (!this.show) {
