@@ -165,29 +165,18 @@
                 </span>
               </div>
             </div>
-            <div class="temp-box align-center">
-              <div class="text-small space-between ml20 ml20">
-                {{ _t('Event') }}
-                 <span class="text-green">
-                  {{ rain_event }} {{ rain_unit }}
-                </span>
-              </div>
-              <div class="text-small space-between ml20">
-                {{ _t('Hourly') }} <span class="text-green">
-                  {{ rain_hour }} {{ rain_unit }}
-                </span>
-              </div>
-              <div class="text-small space-between ml20">
+            <div class="temp-box align-center rain_details">
+              <div class="text-small space-evenly ml20">
                 {{ _t('Weekly') }} <span class="text-green">
                   {{ rain_week }} {{ rain_unit }}
                 </span>
               </div>
-              <div class="text-small space-between ml20">
+              <div class="text-small space-evenly ml20">
                 {{ _t('Monthly') }} <span class="text-green">
                   {{ rain_month }} {{ rain_unit }}
                 </span>
               </div>
-              <div class="text-small space-between ml20">
+              <div class="text-small space-evenly ml20">
                 {{ _t('Yearly') }} <span class="text-green">
                   {{ rain_year }} {{ rain_unit }}
                 </span>
