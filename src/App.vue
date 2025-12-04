@@ -1,6 +1,9 @@
 <template>
   <main class="main-section">
-    <div class="weather">
+    <div class="loader-container" v-if="!is_ready">
+      <div class="loader"></div>
+    </div>
+    <div class="weather" v-if="is_ready">
         <img src="./assets/globus.png" alt="" class ="glogo">
         <h2>{{ _t('Our meteostation') }}</h2> 
       {{ _t('Updated at') }} {{ updated_at_formatted }}
@@ -201,7 +204,8 @@ export default {
       wxData: null,
       language: 'en-US',
       timer: '',
-      updated_at: ""
+      updated_at: "",
+      is_ready: false
     };
   },
   mounted() {
@@ -218,6 +222,8 @@ export default {
         const response = await axios(REQUEST_PARAMS);
         this.wxData = response.data.data;
         this.updated_at = new Date().toLocaleTimeString();
+        this.is_ready = true;
+        console.log(this.wxData)
       } catch (error) {
         console.error(this._t('Error fetching weather data:'), error);
       }
