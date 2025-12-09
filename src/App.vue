@@ -223,7 +223,6 @@ export default {
         this.wxData = response.data.data;
         this.updated_at = new Date().toLocaleTimeString();
         this.is_ready = true;
-        console.log(this.wxData)
       } catch (error) {
         console.error(this._t('Error fetching weather data:'), error);
       }
