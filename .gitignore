@@ -14,10 +14,10 @@ dist-ssr
 coverage
 *.local
 
+src/assets/*.png
+
 /cypress/videos/
 /cypress/screenshots/
-
-/src/assets/*.png
 
 # Editor directories and files
 .vscode/*
@@ -32,3 +32,4 @@ coverage
 *.tsbuildinfo
 
 src/request_params.ts
+src/history_request_params.ts

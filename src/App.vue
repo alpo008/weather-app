@@ -166,28 +166,17 @@
                 </div>
               </div>
               <div class="temp-box align-center">
-                <div class="text-small space-between ml20 ml20">
-                  {{ _t('Event') }}
-                   <span class="text-green">
-                    {{ rain_event }} {{ rain_unit }}
-                  </span>
-                </div>
-                <div class="text-small space-between ml20">
-                  {{ _t('Hourly') }} <span class="text-green">
-                    {{ rain_hour }} {{ rain_unit }}
-                  </span>
-                </div>
-                <div class="text-small space-between ml20">
+                <div class="text-small space-between" style="height:2em;">
                   {{ _t('Weekly') }} <span class="text-green">
                     {{ rain_week }} {{ rain_unit }}
                   </span>
                 </div>
-                <div class="text-small space-between ml20">
+                <div class="text-small space-between" style="height:2em;">
                   {{ _t('Monthly') }} <span class="text-green">
                     {{ rain_month }} {{ rain_unit }}
                   </span>
                 </div>
-                <div class="text-small space-between ml20">
+                <div class="text-small space-between" style="height:2em;">
                   {{ _t('Yearly') }} <span class="text-green">
                     {{ rain_year }} {{ rain_unit }}
                   </span>
@@ -205,12 +194,16 @@
   import axios from "axios";
   import REQUEST_PARAMS from "./request_params.ts";
   import TRANSLATIONS from "./translations.ts";
+  import moment from "moment/dist/moment";
+
+  import HISTORY_REQUEST_PARAMS from "./history_request_params.ts";
 
 export default {
   name: "App",
   data() {
     return {
       wxData: null,
+      historyData: null,
       language: 'en-US',
       timer: '',
       updated_at: "",
@@ -219,8 +212,7 @@ export default {
   },
   mounted() {
     this.language = window.navigator.language;
-/*    this.getWxData();
-    this.timer = setInterval(this.getWxData, 300000);*/
+    this.getHistory();
   },
   beforeDestroy() {
     clearInterval(this.timer);
@@ -237,6 +229,15 @@ export default {
         });
       } catch (error) {
         console.error(this._t('Error fetching weather data:'), error);
+      }
+    },
+    async getHistory() {
+      try {
+        const response = await axios(HISTORY_REQUEST_PARAMS);
+        this.historyData = response.data.data;
+        console.log(this.historyData);
+      } catch (error) {
+        console.error(this._t('Error fetching history data:'), error);
       }
     },
     _t(txt) {
