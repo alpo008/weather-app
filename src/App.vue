@@ -232,12 +232,25 @@ export default {
       }
     },
     async getHistory() {
-      try {
-        const response = await axios(HISTORY_REQUEST_PARAMS);
-        this.historyData = response.data.data;
-        console.log(this.historyData);
-      } catch (error) {
-        console.error(this._t('Error fetching history data:'), error);
+      let currentTimestamp = Date.now();
+      let storedHistoryData = JSON.parse(localStorage.getItem('history'));
+      let mustUpdate = false;
+      if (storedHistoryData === null) {
+        mustUpdate = true;
+      } else {
+        if (currentTimestamp - storedHistoryData.updated_at > 7200000) {
+          mustUpdate = true;
+        }
+      }
+      if (mustUpdate) {
+        try {
+          const response = await axios(HISTORY_REQUEST_PARAMS);
+          this.historyData = response.data.data;
+          this.historyData.updated_at = currentTimestamp;
+          localStorage.setItem('history', JSON.stringify(this.historyData));
+        } catch (error) {
+          console.error(this._t('Error fetching history data:'), error);
+        }
       }
     },
     _t(txt) {
