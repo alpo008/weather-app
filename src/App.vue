@@ -198,6 +198,9 @@
 
   import HISTORY_REQUEST_PARAMS from "./history_request_params.ts";
 
+  const HISTORY_UPDATES_INTERVAL = 7200000;  //TODO 2 hours
+  const WEATHER_UPDATES_INTERVAL = 300000;  //TODO 5 minutes
+
 export default {
   name: "App",
   data() {
@@ -212,13 +215,13 @@ export default {
   },
   mounted() {
     this.language = window.navigator.language;
-    this.getHistory();
   },
   beforeDestroy() {
     clearInterval(this.timer);
   },
   methods: {
     async getWxData() {
+      this.updateHistory();
       try {
         const response = await axios(REQUEST_PARAMS);
         this.wxData = response.data.data;
@@ -231,21 +234,13 @@ export default {
         console.error(this._t('Error fetching weather data:'), error);
       }
     },
-    async getHistory() {
-      let currentTimestamp = Date.now();
-      let storedHistoryData = JSON.parse(localStorage.getItem('history'));
-      let mustUpdate = false;
-      if (storedHistoryData === null) {
-        mustUpdate = true;
-      } else {
-        if (currentTimestamp - storedHistoryData.updated_at > 7200000) {
-          mustUpdate = true;
-        }
-      }
-      if (mustUpdate) {
+    async updateHistory() {
+      this.historyData = JSON.parse(localStorage.getItem('history'));
+      if (!this.history_is_ready) {
         try {
           const response = await axios(HISTORY_REQUEST_PARAMS);
           this.historyData = response.data.data;
+          let currentTimestamp = Date.now();
           this.historyData.updated_at = currentTimestamp;
           localStorage.setItem('history', JSON.stringify(this.historyData));
         } catch (error) {
@@ -421,6 +416,19 @@ export default {
       } else {
         return '';
       }
+    },
+    history_is_ready() {
+      if (this.historyData === null) {
+        return false;
+      }
+      if (this.historyData.updated_at === null) {
+        return false;
+      }
+      let currentTimestamp = Date.now();
+      if (currentTimestamp - this.historyData.updated_at > HISTORY_UPDATES_INTERVAL) {
+        return false;
+      }
+      return true;
     }
   }
 }
