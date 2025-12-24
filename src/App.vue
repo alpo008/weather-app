@@ -106,6 +106,9 @@
                 </div>
               </div>
             </div>
+            <div class="params_block">
+              <LineChart :history="solar_history" style="" />
+            </div>
           </div>
           <div class="params_block_wrapper">
             <div class="text-small text-white text-bolder">
@@ -439,7 +442,6 @@ export default {
       return true;
     },
     temperature_history() {
-      console.log(this.historyData)
       let temperatureHistory = this.historyData?.outdoor?.temperature?.list;
       let humidityHistory = this.historyData?.outdoor?.humidity?.list;
       let labels = [];
@@ -481,6 +483,31 @@ export default {
           {
             data:pressureDataset,
             label: this._t('Pressure'), 
+            borderColor: 'rgb(141, 172, 45)', 
+            backgroundColor: 'rgba(141, 172, 45, 0.3)',
+            pointRadius: 1
+          }
+        ]
+      };
+    },
+    solar_history() {
+      let solarHistory = this.historyData?.solar_and_uvi?.solar?.list;
+      let labels = [];
+      let solarDataset = [];
+      Object.keys(solarHistory).forEach(key => {
+        if (!isNaN(key)) {
+          if (moment.unix(key).hour() === 15) {
+            labels.push(moment.unix(key).format("DD.MM"))
+            solarDataset.push(parseFloat(solarHistory[key]));
+          }
+        }
+      });
+      return {
+        'labels':labels,
+        'datasets': [
+          {
+            data:solarDataset,
+            label: this._t('Illumination'), 
             borderColor: 'rgb(141, 172, 45)', 
             backgroundColor: 'rgba(141, 172, 45, 0.3)',
             pointRadius: 1
