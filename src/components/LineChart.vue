@@ -1,5 +1,5 @@
 <template>
-  <Bar
+  <Line
     id="my-chart-id"
     :options="chartOptions"
     :data="history"
@@ -7,14 +7,14 @@
 </template>
 
 <script>
-import { Bar } from 'vue-chartjs'
-import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
+import { Line } from 'vue-chartjs'
+import { Chart as ChartJS, Title, Tooltip, Legend, LineElement, CategoryScale, LinearScale, PointElement } from 'chart.js'
 
-ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
+ChartJS.register(Title, Tooltip, Legend, LineElement, CategoryScale, LinearScale, PointElement)
 
 export default {
-  name: 'BarChart',
-  components: { Bar },
+  name: 'LineChart',
+  components: { Line },
   props: ['history'],
   data() {
     return {

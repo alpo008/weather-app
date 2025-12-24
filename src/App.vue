@@ -43,7 +43,7 @@
               </div>
             </div>
             <div class="params_block">
-              <BarChart :history="temperature_history" />
+              <LineChart :history="temperature_history" />
             </div>
           </div>
           <div class="params_block_wrapper">
@@ -73,6 +73,9 @@
                   </span>
                 </div>
               </div>
+            </div>
+            <div class="params_block">
+              <LineChart :history="pressure_history" style="" />
             </div>
           </div>
           <div class="params_block_wrapper">
@@ -198,7 +201,7 @@
   import REQUEST_PARAMS from "./request_params.ts";
   import TRANSLATIONS from "./translations.ts";
   import moment from "moment/dist/moment";
-  import BarChart from "./components/BarChart.vue"
+  import LineChart from "./components/LineChart.vue"
 
   import HISTORY_REQUEST_PARAMS from "./history_request_params.ts";
 
@@ -207,7 +210,7 @@
 
 export default {
   name: "App",
-  components: { BarChart },
+  components: { LineChart },
   data() {
     return {
       wxData: null,
@@ -436,18 +439,53 @@ export default {
       return true;
     },
     temperature_history() {
+      console.log(this.historyData)
       let temperatureHistory = this.historyData?.outdoor?.temperature?.list;
+      let humidityHistory = this.historyData?.outdoor?.humidity?.list;
       let labels = [];
       let temperatureDataset = [];
+      let humidityDataset = [];
       Object.keys(temperatureHistory).forEach(key => {
         if (!isNaN(key)) {
           labels.push(moment.unix(key).format("DD.MM"))
           temperatureDataset.push(parseFloat(temperatureHistory[key]));
+          humidityDataset.push(parseFloat(humidityHistory[key]));
         }
       });
       return {
         'labels':labels,
-        'datasets': [{'data':temperatureDataset, borderColor: '#36A2EB', backgroundColor: '#9BD033'}]
+        'datasets': [
+          {
+            data:temperatureDataset,
+            label: this._t('Temperature'), 
+            borderColor: 'rgb(141, 172, 45)', 
+            backgroundColor: 'rgba(141, 172, 45, 0.3)',
+            pointRadius: 1
+          }
+        ]
+      };
+    },
+    pressure_history() {
+      let pressureHistory = this.historyData?.pressure?.absolute?.list;
+      let labels = [];
+      let pressureDataset = [];
+      Object.keys(pressureHistory).forEach(key => {
+        if (!isNaN(key)) {
+          labels.push(moment.unix(key).format("DD.MM"))
+          pressureDataset.push(parseFloat(pressureHistory[key]));
+        }
+      });
+      return {
+        'labels':labels,
+        'datasets': [
+          {
+            data:pressureDataset,
+            label: this._t('Pressure'), 
+            borderColor: 'rgb(141, 172, 45)', 
+            backgroundColor: 'rgba(141, 172, 45, 0.3)',
+            pointRadius: 1
+          }
+        ]
       };
     }
   }
