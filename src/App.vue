@@ -42,6 +42,9 @@
                 </div>
               </div>
             </div>
+            <div class="params_block">
+              <BarChart :history="temperature_history" />
+            </div>
           </div>
           <div class="params_block_wrapper">
             <div class="text-small text-white text-bolder">
@@ -195,6 +198,7 @@
   import REQUEST_PARAMS from "./request_params.ts";
   import TRANSLATIONS from "./translations.ts";
   import moment from "moment/dist/moment";
+  import BarChart from "./components/BarChart.vue"
 
   import HISTORY_REQUEST_PARAMS from "./history_request_params.ts";
 
@@ -203,6 +207,7 @@
 
 export default {
   name: "App",
+  components: { BarChart },
   data() {
     return {
       wxData: null,
@@ -429,6 +434,21 @@ export default {
         return false;
       }
       return true;
+    },
+    temperature_history() {
+      let temperatureHistory = this.historyData?.outdoor?.temperature?.list;
+      let labels = [];
+      let temperatureDataset = [];
+      Object.keys(temperatureHistory).forEach(key => {
+        if (!isNaN(key)) {
+          labels.push(moment.unix(key).format("DD.MM"))
+          temperatureDataset.push(parseFloat(temperatureHistory[key]));
+        }
+      });
+      return {
+        'labels':labels,
+        'datasets': [{'data':temperatureDataset, borderColor: '#36A2EB', backgroundColor: '#9BD033'}]
+      };
     }
   }
 }

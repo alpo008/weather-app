@@ -9,7 +9,7 @@ const translations = {
         "Hourly" : "За сутки",
         "Humidity" : "Влажность",
         "Illumination" : "Освещенность",
-        "lx" : "люкс",
+        "lx" : "лк",
         "mm" : "мм",
         "mmHg" : "мм рт. ст.",
         "Monthly" : "За месяц",
