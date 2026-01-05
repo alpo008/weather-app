@@ -114,7 +114,7 @@
             </div>
           </div>
           <div class="params_block_wrapper">
-            <div class="link-icon-left pt-l-4" @click="showChart('wind_speed')">
+            <div class="link-icon-left pt-l-4" @click="showChart('wind')">
               <img src="./assets/chart.png" alt="" :title="_t('Show chart')">   
             </div>
             <div class="text-small text-white text-bolder">
@@ -156,7 +156,7 @@
             </div>
           </div>
           <div class="params_block_wrapper">
-            <div class="link-icon-left pt-l-4" @click="showChart('rain')">
+            <div class="link-icon-left pt-l-4" @click="showChart('rainfall')">
               <img src="./assets/chart.png" alt="" :title="_t('Show chart')">   
             </div>
             <div class="text-small text-white text-bolder">
@@ -208,7 +208,7 @@
             <div class="close-icon-right" @click="showChart(null)" :title="_t('Close')">
                 &#65794;
             </div>
-            <LineChart :history="pressure_history" style="" />
+            <LineChart :history="dataset" style="" />
           </div>
         </div>
       </div>
@@ -239,7 +239,8 @@ export default {
       timer: '',
       updated_at: "",
       show: false,
-      chartMode: false
+      chartMode: false,
+      dataset: null
     };
   },
   mounted() {
@@ -297,9 +298,30 @@ export default {
       if (wx_param === null) {
         this.chartMode = false;
       } else {
+        switch (wx_param) {
+          case 'temperature' :
+            this.dataset = this.temperature_history;
+            break;
+          case "humidity":
+            this.dataset = this.humidity_history;
+            break;
+          case "pressure":
+            this.dataset = this.pressure_history;
+            break;
+          case "solar":
+            this.dataset = this.solar_history;
+            break;
+          case "wind":
+            this.dataset = this.wind_history;
+            break;
+          case "rainfall":
+            this.dataset = this.rainfall_history;
+            break;
+          default:
+            this.dataset = this.temperature_history;
+        }
         this.chartMode = true;
       }
-      console.log(wx_param)
     }
   },
   computed: {
@@ -455,7 +477,7 @@ export default {
       }
     },
     history_is_ready() {
-      if (this.historyData === null) {
+      if (this.historyData === null || this.historyData.updted_at === undefined) {
         return false;
       }
       if (this.historyData.updated_at === null) {
@@ -469,15 +491,12 @@ export default {
     },
     temperature_history() {
       let temperatureHistory = this.historyData?.outdoor?.temperature?.list;
-      let humidityHistory = this.historyData?.outdoor?.humidity?.list;
       let labels = [];
       let temperatureDataset = [];
-      let humidityDataset = [];
       Object.keys(temperatureHistory).forEach(key => {
         if (!isNaN(key)) {
           labels.push(moment.unix(key).format("DD.MM"))
           temperatureDataset.push(parseFloat(temperatureHistory[key]));
-          humidityDataset.push(parseFloat(humidityHistory[key]));
         }
       });
       return {
@@ -486,6 +505,29 @@ export default {
           {
             data:temperatureDataset,
             label: this._t('Temperature'), 
+            borderColor: 'rgb(141, 172, 45)', 
+            backgroundColor: 'rgba(141, 172, 45, 0.3)',
+            pointRadius: 1
+          }
+        ]
+      };
+    },
+    humidity_history() {
+      let humidityHistory = this.historyData?.outdoor?.humidity?.list;
+      let labels = [];
+      let humidityDataset = [];
+      Object.keys(humidityHistory).forEach(key => {
+        if (!isNaN(key)) {
+          labels.push(moment.unix(key).format("DD.MM"))
+          humidityDataset.push(parseFloat(humidityHistory[key]));
+        }
+      });
+      return {
+        'labels':labels,
+        'datasets': [
+          {
+            data:humidityDataset,
+            label: this._t('Humidity'), 
             borderColor: 'rgb(141, 172, 45)', 
             backgroundColor: 'rgba(141, 172, 45, 0.3)',
             pointRadius: 1
@@ -509,6 +551,52 @@ export default {
           {
             data:pressureDataset,
             label: this._t('Pressure'), 
+            borderColor: 'rgb(141, 172, 45)', 
+            backgroundColor: 'rgba(141, 172, 45, 0.3)',
+            pointRadius: 1
+          }
+        ]
+      };
+    },
+    wind_history() {
+      let windHistory = this.historyData?.wind?.wind_speed?.list;
+      let labels = [];
+      let windDataset = [];
+      Object.keys(windHistory).forEach(key => {
+        if (!isNaN(key)) {
+          labels.push(moment.unix(key).format("DD.MM"))
+          windDataset.push(parseFloat(windHistory[key]));
+        }
+      });
+      return {
+        'labels':labels,
+        'datasets': [
+          {
+            data:windDataset,
+            label: this._t('Wind'), 
+            borderColor: 'rgb(141, 172, 45)', 
+            backgroundColor: 'rgba(141, 172, 45, 0.3)',
+            pointRadius: 1
+          }
+        ]
+      };
+    },
+    rainfall_history() {
+      let rainfallHistory = this.historyData?.rainfall?.daily?.list;
+      let labels = [];
+      let rainfallDataset = [];
+      Object.keys(rainfallHistory).forEach(key => {
+        if (!isNaN(key)) {
+          labels.push(moment.unix(key).format("DD.MM"))
+          rainfallDataset.push(parseFloat(rainfallHistory[key]));
+        }
+      });
+      return {
+        'labels':labels,
+        'datasets': [
+          {
+            data:rainfallDataset,
+            label: this._t('Rain'), 
             borderColor: 'rgb(141, 172, 45)', 
             backgroundColor: 'rgba(141, 172, 45, 0.3)',
             pointRadius: 1

@@ -34,6 +34,6 @@ export default {
 <style scoped>
   #history_chart {
     height: auto!IMPORTANT;
-    width: 100%!IMPORTANT;
+    width: 99%!IMPORTANT;
   }
 </style>
