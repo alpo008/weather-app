@@ -8,6 +8,9 @@
           <div class="params_block_wrapper">
             <div class="params_block">
               <div class="temp-box">
+                <div class="link-icon-left" @click="showChart('temperature')">
+                  <img src="./assets/chart.png" alt="" :title="_t('Show chart')">   
+                </div>
                 <div class="text-small text-white text-bolder">
                   {{ _t('Temperature') }}
                 </div>
@@ -25,6 +28,9 @@
                 </div>
               </div>
               <div class="temp-box">
+                <div class="link-icon-right" @click="showChart('humidity')">
+                  <img src="./assets/chart.png" alt="" :title="_t('Show chart')">   
+                </div>
                 <div class="text-small text-white text-bolder">
                   {{ _t('Humidity') }}
                 </div>
@@ -47,6 +53,9 @@
             </div>
           </div>
           <div class="params_block_wrapper">
+            <div class="link-icon-left pt-l-4" @click="showChart('pressure')">
+              <img src="./assets/chart.png" alt="" :title="_t('Show chart')">   
+            </div>
             <div class="text-small text-white text-bolder">
               {{ _t('Pressure') }} 
             </div>
@@ -79,6 +88,9 @@
             </div>
           </div>
           <div class="params_block_wrapper">
+            <div class="link-icon-left pt-l-4" @click="showChart('solar')">
+              <img src="./assets/chart.png" alt="" :title="_t('Show chart')">   
+            </div>
             <div class="text-small text-white text-bolder">
               {{ _t('Solar and UVI') }}
             </div>
@@ -111,6 +123,9 @@
             </div>
           </div>
           <div class="params_block_wrapper">
+            <div class="link-icon-left pt-l-4" @click="showChart('wind_speed')">
+              <img src="./assets/chart.png" alt="" :title="_t('Show chart')">   
+            </div>
             <div class="text-small text-white text-bolder">
               {{ _t('Wind') }}
             </div>
@@ -150,6 +165,9 @@
             </div>
           </div>
           <div class="params_block_wrapper">
+            <div class="link-icon-left pt-l-4" @click="showChart('rain')">
+              <img src="./assets/chart.png" alt="" :title="_t('Show chart')"">   
+            </div>
             <div class="text-small text-white text-bolder">
               {{ _t('Rain') }}
             </div>
@@ -274,7 +292,10 @@ export default {
         this.timer = setInterval(this.getWxData, 300000);
       }
       this.show = !this.show;  
-    } 
+    },
+    showChart(wx_param) {
+      console.log(wx_param)
+    }
   },
   computed: {
     temperature_out() {

@@ -20,6 +20,7 @@ const translations = {
         "Pressure" : "Давление",
         "Rain" : "Дождь",
         "Relative" : "Относительное",
+        "Show chart" : "Инфографика",
         "Speed" : "Скорость",
         "Solar and UVI" : "Солнце и УФ",
         "Temperature" : "Температура",
