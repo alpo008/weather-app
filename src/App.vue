@@ -4,7 +4,7 @@
       <h2 @click="start">{{ _t('Our meteostation') }}</h2>
       <div v-if="show"> 
         {{ _t('Updated at') }} {{ updated_at }}
-        <div class="wrapper">
+        <div class="wrapper" v-if="!chartMode">
           <div class="params_block_wrapper">
             <div class="params_block">
               <div class="temp-box">
@@ -48,9 +48,6 @@
                 </div>
               </div>
             </div>
-            <div class="params_block">
-              <LineChart :history="temperature_history" />
-            </div>
           </div>
           <div class="params_block_wrapper">
             <div class="link-icon-left pt-l-4" @click="showChart('pressure')">
@@ -83,9 +80,6 @@
                 </div>
               </div>
             </div>
-            <div class="params_block">
-              <LineChart :history="pressure_history" style="" />
-            </div>
           </div>
           <div class="params_block_wrapper">
             <div class="link-icon-left pt-l-4" @click="showChart('solar')">
@@ -117,9 +111,6 @@
                   </span>
                 </div>
               </div>
-            </div>
-            <div class="params_block">
-              <LineChart :history="solar_history" style="" />
             </div>
           </div>
           <div class="params_block_wrapper">
@@ -166,7 +157,7 @@
           </div>
           <div class="params_block_wrapper">
             <div class="link-icon-left pt-l-4" @click="showChart('rain')">
-              <img src="./assets/chart.png" alt="" :title="_t('Show chart')"">   
+              <img src="./assets/chart.png" alt="" :title="_t('Show chart')">   
             </div>
             <div class="text-small text-white text-bolder">
               {{ _t('Rain') }}
@@ -212,6 +203,14 @@
             </div>
           </div>
         </div>
+        <div class="wrapper" v-if="chartMode">
+          <div class="params_block">
+            <div class="close-icon-right" @click="showChart(null)" :title="_t('Close')">
+                &#65794;
+            </div>
+            <LineChart :history="pressure_history" style="" />
+          </div>
+        </div>
       </div>
     </div>
   </main>
@@ -239,7 +238,8 @@ export default {
       language: 'en-US',
       timer: '',
       updated_at: "",
-      show: false
+      show: false,
+      chartMode: false
     };
   },
   mounted() {
@@ -294,6 +294,11 @@ export default {
       this.show = !this.show;  
     },
     showChart(wx_param) {
+      if (wx_param === null) {
+        this.chartMode = false;
+      } else {
+        this.chartMode = true;
+      }
       console.log(wx_param)
     }
   },

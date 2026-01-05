@@ -1,8 +1,9 @@
 <template>
   <Line
-    id="my-chart-id"
+    id="history_chart"
     :options="chartOptions"
     :data="history"
+    width="100%"
   />
 </template>
 
@@ -18,11 +19,6 @@ export default {
   props: ['history'],
   data() {
     return {
-      chartData: {
-        labels: ['2025.11.23','2025.11.23','2025.11.24','2025.11.24',],
-        datasets: [{data: [1, 4, -5, 9],       borderColor: '#36A2EB',
-      backgroundColor: '#9BD0F5',}]
-      },
       chartOptions: {
         responsive: true,
       }
@@ -34,3 +30,10 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+  #history_chart {
+    height: auto!IMPORTANT;
+    width: 100%!IMPORTANT;
+  }
+</style>

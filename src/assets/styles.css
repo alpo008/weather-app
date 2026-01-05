@@ -207,6 +207,18 @@ body {
     cursor: pointer;
 }
 
-.link-icon-left:hover, .link-icon-right:hover {
+.close-icon-right {
+    position: absolute;
+    right: 7px;
+    top: 5px;
+    cursor: pointer;
+    border: 1px solid grey;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+}
+
+.link-icon-left:hover, .link-icon-right:hover, .close-icon-right:hover {
     background-color: darkslategrey;
 }
