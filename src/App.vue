@@ -504,7 +504,7 @@ export default {
         'datasets': [
           {
             data:temperatureDataset,
-            label: this._t('Temperature'), 
+            label: this._t('Temperature') + ', ' + this._t('℃'),  
             borderColor: 'rgb(141, 172, 45)', 
             backgroundColor: 'rgba(141, 172, 45, 0.3)',
             pointRadius: 1
@@ -527,7 +527,7 @@ export default {
         'datasets': [
           {
             data:humidityDataset,
-            label: this._t('Humidity'), 
+            label: this._t('Humidity')  + ', ' + this._t('%'), 
             borderColor: 'rgb(141, 172, 45)', 
             backgroundColor: 'rgba(141, 172, 45, 0.3)',
             pointRadius: 1
@@ -550,7 +550,7 @@ export default {
         'datasets': [
           {
             data:pressureDataset,
-            label: this._t('Pressure'), 
+            label: this._t('Pressure') + ', ' + this._t('mmHg'), 
             borderColor: 'rgb(141, 172, 45)', 
             backgroundColor: 'rgba(141, 172, 45, 0.3)',
             pointRadius: 1
@@ -573,7 +573,7 @@ export default {
         'datasets': [
           {
             data:windDataset,
-            label: this._t('Wind'), 
+            label: this._t('Wind') + ', ' + this._t('m/s'), 
             borderColor: 'rgb(141, 172, 45)', 
             backgroundColor: 'rgba(141, 172, 45, 0.3)',
             pointRadius: 1
@@ -582,7 +582,7 @@ export default {
       };
     },
     rainfall_history() {
-      let rainfallHistory = this.historyData?.rainfall?.daily?.list;
+      let rainfallHistory = this.historyData?.rainfall?.event?.list;
       let labels = [];
       let rainfallDataset = [];
       Object.keys(rainfallHistory).forEach(key => {
@@ -596,7 +596,7 @@ export default {
         'datasets': [
           {
             data:rainfallDataset,
-            label: this._t('Rain'), 
+            label: this._t('Rain') + ', ' + this._t('mm'),  
             borderColor: 'rgb(141, 172, 45)', 
             backgroundColor: 'rgba(141, 172, 45, 0.3)',
             pointRadius: 1
@@ -621,7 +621,7 @@ export default {
         'datasets': [
           {
             data:solarDataset,
-            label: this._t('Illumination'), 
+            label: this._t('Illumination') + ', ' + this._t('lx'), 
             borderColor: 'rgb(141, 172, 45)', 
             backgroundColor: 'rgba(141, 172, 45, 0.3)',
             pointRadius: 1

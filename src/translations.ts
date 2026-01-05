@@ -29,7 +29,9 @@ const translations = {
         "UVI" : "УФ индекс",
         "Weekly" : "За неделю",
         "Wind" : "Ветер",
-        "Yearly" : "За год"
+        "Yearly" : "За год",
+        "%": "%",
+        "℃": "℃"
     }
   };
 export default translations;
