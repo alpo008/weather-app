@@ -471,7 +471,7 @@ export default {
     },
     toggler_style() {
       if (!this.show) {
-        return 'width: 270px;left: 50%;';
+        return 'width: 270px;left: 0;';
       } else {
         return '';
       }
