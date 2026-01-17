@@ -8,8 +8,10 @@
           <div class="params_block_wrapper">
             <div class="params_block">
               <div class="temp-box">
-                <div class="link-icon-left" @click="showChart('temperature')">
-                  <img src="./assets/chart.png" alt="" :title="_t('Show chart')">   
+                <div class="link-icon-left chart-link" 
+                  @click="showChart('temperature')" 
+                  :title="_t('Show chart')"
+                >
                 </div>
                 <div class="text-small text-white text-bolder">
                   {{ _t('Temperature') }}
@@ -28,8 +30,10 @@
                 </div>
               </div>
               <div class="temp-box">
-                <div class="link-icon-right" @click="showChart('humidity')">
-                  <img src="./assets/chart.png" alt="" :title="_t('Show chart')">   
+                <div class="link-icon-right chart-link" 
+                  @click="showChart('humidity')" 
+                  :title="_t('Show chart')"
+                >
                 </div>
                 <div class="text-small text-white text-bolder">
                   {{ _t('Humidity') }}
@@ -50,9 +54,11 @@
             </div>
           </div>
           <div class="params_block_wrapper">
-            <div class="link-icon-left pt-l-4" @click="showChart('pressure')">
-              <img src="./assets/chart.png" alt="" :title="_t('Show chart')">   
-            </div>
+                <div class="link-icon-left chart-link pt-l-4" 
+                  @click="showChart('pressure')" 
+                  :title="_t('Show chart')"
+                >
+                </div>
             <div class="text-small text-white text-bolder">
               {{ _t('Pressure') }} 
             </div>
@@ -82,9 +88,11 @@
             </div>
           </div>
           <div class="params_block_wrapper">
-            <div class="link-icon-left pt-l-4" @click="showChart('solar')">
-              <img src="./assets/chart.png" alt="" :title="_t('Show chart')">   
-            </div>
+                <div class="link-icon-left chart-link pt-l-4" 
+                  @click="showChart('solar')" 
+                  :title="_t('Show chart')"
+                >
+                </div>
             <div class="text-small text-white text-bolder">
               {{ _t('Solar and UVI') }}
             </div>
@@ -114,9 +122,11 @@
             </div>
           </div>
           <div class="params_block_wrapper">
-            <div class="link-icon-left pt-l-4" @click="showChart('wind')">
-              <img src="./assets/chart.png" alt="" :title="_t('Show chart')">   
-            </div>
+              <div class="link-icon-left chart-link pt-l-4" 
+                @click="showChart('wind')" 
+                :title="_t('Show chart')"
+              >
+              </div>
             <div class="text-small text-white text-bolder">
               {{ _t('Wind') }}
             </div>
@@ -156,8 +166,10 @@
             </div>
           </div>
           <div class="params_block_wrapper">
-            <div class="link-icon-left pt-l-4" @click="showChart('rainfall')">
-              <img src="./assets/chart.png" alt="" :title="_t('Show chart')">   
+            <div class="link-icon-left chart-link pt-l-4" 
+              @click="showChart('rainfall')" 
+              :title="_t('Show chart')"
+            >
             </div>
             <div class="text-small text-white text-bolder">
               {{ _t('Rain') }}
@@ -243,8 +255,15 @@ export default {
       dataset: null
     };
   },
-  mounted() {
+  async mounted() {
     this.language = window.navigator.language;
+
+      try {
+        const response = await axios('https://electromore.ru/api/meteo');
+        console.log(response.data.all)
+      } catch (error) {
+        console.error(this._t('Error fetching weather data:'), error);
+      }
   },
   beforeDestroy() {
     clearInterval(this.timer);
@@ -473,7 +492,7 @@ export default {
       if (!this.show) {
         return 'width: 270px;left: 0;';
       } else {
-        return '';
+        return 'top: 0';
       }
     },
     history_is_ready() {
@@ -507,7 +526,7 @@ export default {
             label: this._t('Temperature') + ', ' + this._t('℃'),  
             borderColor: 'rgb(141, 172, 45)', 
             backgroundColor: 'rgba(141, 172, 45, 0.3)',
-            pointRadius: 1
+            pointRadius: 3
           }
         ]
       };
@@ -530,7 +549,7 @@ export default {
             label: this._t('Humidity')  + ', ' + this._t('%'), 
             borderColor: 'rgb(141, 172, 45)', 
             backgroundColor: 'rgba(141, 172, 45, 0.3)',
-            pointRadius: 1
+            pointRadius: 3
           }
         ]
       };
@@ -553,7 +572,7 @@ export default {
             label: this._t('Pressure') + ', ' + this._t('mmHg'), 
             borderColor: 'rgb(141, 172, 45)', 
             backgroundColor: 'rgba(141, 172, 45, 0.3)',
-            pointRadius: 1
+            pointRadius: 3
           }
         ]
       };
@@ -576,7 +595,7 @@ export default {
             label: this._t('Wind') + ', ' + this._t('m/s'), 
             borderColor: 'rgb(141, 172, 45)', 
             backgroundColor: 'rgba(141, 172, 45, 0.3)',
-            pointRadius: 1
+            pointRadius: 3
           }
         ]
       };
@@ -599,7 +618,7 @@ export default {
             label: this._t('Rain') + ', ' + this._t('mm'),  
             borderColor: 'rgb(141, 172, 45)', 
             backgroundColor: 'rgba(141, 172, 45, 0.3)',
-            pointRadius: 1
+            pointRadius: 3
           }
         ]
       };
@@ -624,7 +643,7 @@ export default {
             label: this._t('Illumination') + ', ' + this._t('lx'), 
             borderColor: 'rgb(141, 172, 45)', 
             backgroundColor: 'rgba(141, 172, 45, 0.3)',
-            pointRadius: 1
+            pointRadius: 3
           }
         ]
       };

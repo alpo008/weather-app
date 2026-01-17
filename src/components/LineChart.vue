@@ -21,6 +21,15 @@ export default {
     return {
       chartOptions: {
         responsive: true,
+        elements: {
+          line: {
+            cubicInterpolationMode: 'monotone'
+          },
+          point: {
+            hitRadius: 5,
+            hoverRadius: 6
+          }
+        }
       }
     }
   },
@@ -33,7 +42,6 @@ export default {
 
 <style scoped>
   #history_chart {
-    height: auto!IMPORTANT;
-    width: 99%!IMPORTANT;
+    max-height: -webkit-fill-available;
   }
 </style>

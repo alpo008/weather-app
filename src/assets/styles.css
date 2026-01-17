@@ -6,7 +6,6 @@
 
 /* General Styles */
 html, body {
-  /*  height: 100%;*/
     margin: 0;
     padding: 0;
 }
@@ -41,14 +40,13 @@ body {
 /* Weather Widget */
 .weather {
     text-align: center;
-    width: 100vw;
+    width: 100%;
     color: #fff;
     margin-bottom: 3rem;
     background-color: rgb(43, 46, 53);
     border-radius: 1rem;
     box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.1);
-    position: absolute;
-/*    transition: width 1s cubic-bezier(0.29, 0.8, 1, -0.68);*/
+    position: fixed;
     transition: width 0.5s linear;
 }
 
@@ -133,7 +131,8 @@ body {
 }
 
 .pt-l-4 {
-    padding: 4px 0 0 4px;
+    top: 4px;
+    left: 4px;
 }
 
 .height130 {
@@ -195,16 +194,23 @@ body {
 
 .link-icon-left {
     width: 20px;
-    position: absolute;
+    height: 20px;
+    position: relative;
     justify-self: flex-start;
     cursor: pointer;
 }
 
 .link-icon-right {
     width: 20px;
-    position: absolute;
+    height: 20px;
+    position: relative;
     justify-self: flex-end;
     cursor: pointer;
+}
+
+.chart-link {
+    background-image: url(chart.png);
+    background-repeat: no-repeat;
 }
 
 .close-icon-right {
