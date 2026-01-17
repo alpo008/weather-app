@@ -244,7 +244,7 @@ export default {
     };
   },
   mounted() {
-    this.language = window.navigator.language;
+    this.setLanguage();
   },
   beforeDestroy() {
     clearInterval(this.timer);
@@ -276,6 +276,25 @@ export default {
         } catch (error) {
           console.error(this._t('Error fetching history data:'), error);
         }
+      }
+    },
+    setLanguage() {
+      this.language = window.navigator.language;
+      if (typeof document === 'object') {
+        let tagHtml = document.getElementsByTagName('html');
+        if(typeof tagHtml === 'object' && typeof tagHtml[0] !== 'undefined') {
+          if(typeof tagHtml[0] === 'object') {
+            if(tagHtml[0].getAttribute('lang') !== null) {
+              this.language = tagHtml[0].getAttribute('lang');
+            }
+          }
+        }
+      } 
+      if(this.language === 'ru') {
+        this.language = 'ru-RU'; 
+      }
+      if(this.language === 'en') {
+        this.language = 'en-US'; 
       }
     },
     _t(txt) {
