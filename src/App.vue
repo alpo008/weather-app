@@ -5,8 +5,11 @@
     </div>
     <div class="weather" v-if="is_ready">
         <img src="./assets/globus.png" alt="" class ="glogo">
+        <a href="https://link-to-website" class ="qr-code">
+          <img src="./assets/qr-code.png" alt="" height="70">
+        </a>
         <h2>{{ _t('Our meteostation') }}</h2> 
-      {{ _t('Updated at') }} {{ updated_at_formatted }}
+        {{ _t('Updated at') }} {{ updated_at_formatted }}
       <div class="wrapper">
         <div class="params_block_wrapper">
           <div class="params_block">
