@@ -1,7 +1,7 @@
 <template>
   <main class="main-section">
     <div class="weather" :style="toggler_style">
-      <h2 @click="start">{{ _t('Our meteostation') }}</h2>
+      <h2>{{ _t('Our meteostation') }}</h2>
       <div v-if="show"> 
         {{ _t('Updated at') }} {{ updated_at }}
         <div class="wrapper" v-if="!chartMode">
@@ -250,20 +250,14 @@ export default {
       language: 'en-US',
       timer: '',
       updated_at: "",
-      show: false,
+      show: true,
       chartMode: false,
       dataset: null
     };
   },
   async mounted() {
     this.setLanguage();
-
-      try {
-        const response = await axios('https://electromore.ru/api/meteo');
-        console.log(response.data.all)
-      } catch (error) {
-        console.error(this._t('Error fetching weather data:'), error);
-      }
+    this.start();
   },
   beforeDestroy() {
     clearInterval(this.timer);
@@ -324,13 +318,15 @@ export default {
       return txt;
     },
     start() {
-      if (this.show) {
+        this.getWxData();
+        this.timer = setInterval(this.getWxData, 300000);
+/*      if (this.show) {
         clearInterval(this.timer);
       } else {
         this.getWxData();
         this.timer = setInterval(this.getWxData, 300000);
-      }
-      this.show = !this.show;  
+      }*/
+      //this.show = !this.show;  
     },
     showChart(wx_param) {
       if (wx_param === null) {
