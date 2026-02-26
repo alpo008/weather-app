@@ -496,9 +496,9 @@ export default {
     },
     toggler_style() {
       if (!this.show) {
-        return 'width: 270px;left: 0;';
+        return 'width: 270px;';
       } else {
-        return 'top: 0';
+        return '';
       }
     },
     history_is_ready() {
