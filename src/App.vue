@@ -1,6 +1,18 @@
 <template>
-  <main class="main-section theme-light">
-    <div class="weather" :style="toggler_style">
+  <main :class="main_section_class">
+    <span class="toggler" v-if="show" @click="sidebar=!sidebar">  &hellip;</span>
+    <div id="sidebar" :class="sidebar_class">
+      <div>
+        <fieldset>
+          <legend>{{ _t('Theme') }}</legend>
+          <input type="radio" value="theme-light" v-model="theme"/>
+          <label for="huey">{{ _t('Light') }}</label>
+          <input type="radio" value="theme-dark" v-model="theme"/>
+          <label for="dewey">{{ _t('Dark') }}</label>
+        </fieldset>
+      </div>
+    </div>
+    <div class="weather" :style="weather_block_style" v-show="!sidebar">
       <h2 @click="start">{{ _t('Our meteostation') }}</h2>
       <div v-if="show"> 
         {{ _t('Updated at') }} {{ updated_at }}
@@ -251,8 +263,10 @@ export default {
       timer: '',
       updated_at: "",
       show: false,
+      sidebar: false,
       chartMode: false,
-      dataset: null
+      dataset: null,
+      theme: 'theme-dark'
     };
   },
   async mounted() {
@@ -494,7 +508,7 @@ export default {
       };
       return rumbs[Math.floor(rumb / 22.5)];
     },
-    toggler_style() {
+    weather_block_style() {
       if (!this.show) {
         return 'width: 270px;';
       } else {
@@ -653,7 +667,17 @@ export default {
           }
         ]
       };
-    }
+    },
+    sidebar_class() {
+      if (!this.sidebar) {
+        return 'hidden';
+      } else {
+        return 'active';
+      }
+     },
+     main_section_class() {
+      return 'main-section ' + this.theme;
+     }
   }
 }
 </script>

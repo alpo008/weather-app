@@ -2,6 +2,7 @@ const translations = {
     "ru-RU" : {
         "Absolute" : "Абсолютное",
         "Close" : "Закрыть",
+        "Dark" : "Темная",
         "Dew point" : "Точка росы",
         "Error fetching weather data:" : "Ошибка получения данных:",
         "Event" : "За сегодня",
@@ -10,6 +11,7 @@ const translations = {
         "Hourly" : "За сутки",
         "Humidity" : "Влажность",
         "Illumination" : "Освещенность",
+        "Light" : "светлая",
         "lx" : "лк",
         "mm" : "мм",
         "mmHg" : "мм рт. ст.",
@@ -25,6 +27,7 @@ const translations = {
         "Speed" : "Скорость",
         "Solar and UVI" : "Солнце и УФ",
         "Temperature" : "Температура",
+        "Theme" : "Тема оформления",
         "Updated at" : "Обновлено в",
         "UVI" : "УФ индекс",
         "Weekly" : "За неделю",
