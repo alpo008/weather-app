@@ -45,7 +45,7 @@ body {
     margin-top: -4px;
 /*    margin-bottom: 3rem;*/
     background-color: rgb(43, 46, 53);
-    border-radius: 1rem;
+    border-radius: 3px;
     box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.1);
     position: static;
     transition: width 0.5s linear;
@@ -228,4 +228,31 @@ body {
 
 .link-icon-left:hover, .link-icon-right:hover, .close-icon-right:hover {
     background-color: darkslategrey;
+}
+
+.theme-light {
+    .weather {
+        color: #333;
+        background-color: rgb(245, 245, 255);
+        box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.7);
+    }
+    .text-white {
+        color: #554;
+    }
+    .text-small{
+        color: rgb(96, 95, 92);
+    }
+    .text-green {
+        color: rgb(23, 125, 81);
+    }
+    .text-unit {
+        color: rgb(46, 95, 92);
+    }
+    .chart-link {
+        background-image: url(chart_th-light.png);
+        background-repeat: no-repeat;
+    }
+    .link-icon-left:hover, .link-icon-right:hover, .close-icon-right:hover {
+        background-color: azure;
+    }
 }
