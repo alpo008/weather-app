@@ -268,6 +268,7 @@ export default {
       try {
         const response = await axios(REQUEST_PARAMS);
         this.wxData = response.data.data;
+        console.log(this.wxData)
         this.updated_at = new Date().toLocaleTimeString('ru-RU', { 
           hour: '2-digit', 
           minute: '2-digit', 
@@ -320,13 +321,6 @@ export default {
     start() {
         this.getWxData();
         this.timer = setInterval(this.getWxData, 300000);
-/*      if (this.show) {
-        clearInterval(this.timer);
-      } else {
-        this.getWxData();
-        this.timer = setInterval(this.getWxData, 300000);
-      }*/
-      //this.show = !this.show;  
     },
     showChart(wx_param) {
       if (wx_param === null) {
@@ -505,9 +499,9 @@ export default {
     },
     toggler_style() {
       if (!this.show) {
-        return 'width: 270px;left: 0;';
+        return 'width: 270px;';
       } else {
-        return 'top: 0';
+        return '';
       }
     },
     history_is_ready() {
