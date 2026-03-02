@@ -5,9 +5,9 @@
       <div>
         <fieldset>
           <legend>{{ _t('Theme') }}</legend>
-          <input type="radio" value="theme-light" v-model="theme"/>
+          <input type="radio" value="theme-light" v-model="settings.theme" @change="saveSettings"/>
           <label for="huey">{{ _t('Light') }}</label>
-          <input type="radio" value="theme-dark" v-model="theme"/>
+          <input type="radio" value="theme-dark" v-model="settings.theme" @change="saveSettings"/>
           <label for="dewey">{{ _t('Dark') }}</label>
         </fieldset>
       </div>
@@ -249,6 +249,11 @@
 
   import HISTORY_REQUEST_PARAMS from "./history_request_params.ts";
 
+  const isEmpty = obj => [Object, Array].includes((obj || {}).constructor) && !Object.entries((obj || {})).length;
+
+  const STORAGE = window.localStorage;
+
+
   const HISTORY_UPDATES_INTERVAL = 7200000;  //TODO 2 hours
   const WEATHER_UPDATES_INTERVAL = 300000;  //TODO 5 minutes
 
@@ -266,11 +271,17 @@ export default {
       sidebar: false,
       chartMode: false,
       dataset: null,
-      theme: 'theme-dark'
+      settings: {
+        theme: 'theme-dark'
+      }
     };
   },
   async mounted() {
     this.setLanguage();
+    let savedSettings = JSON.parse(STORAGE.getItem("localSettings"));
+    if (!isEmpty(savedSettings)) {
+      this.settings = savedSettings
+    }
   },
   beforeDestroy() {
     clearInterval(this.timer);
@@ -291,11 +302,11 @@ export default {
         }
     },
     updateHistory(payload) {
-      this.historyData = JSON.parse(localStorage.getItem('history'));
+      this.historyData = JSON.parse(STORAGE.getItem('history'));
       if (!this.history_is_ready) {
         this.historyData = payload?.data;
         this.historyData.updated_at = Date.now();
-        localStorage.setItem('history', JSON.stringify(this.historyData));
+        STORAGE.setItem('history', JSON.stringify(this.historyData));
       }
     },
     setLanguage() {
@@ -361,6 +372,9 @@ export default {
         }
         this.chartMode = true;
       }
+    },
+    saveSettings() {
+      STORAGE.setItem("localSettings", JSON.stringify(this.settings));
     }
   },
   computed: {
@@ -676,7 +690,7 @@ export default {
       }
      },
      main_section_class() {
-      return 'main-section ' + this.theme;
+      return 'main-section ' + this.settings.theme;
      }
   }
 }
