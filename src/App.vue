@@ -10,6 +10,9 @@
           <input type="radio" value="theme-dark" v-model="settings.theme" @change="saveSettings"/>
           <label for="dewey">{{ _t('Dark') }}</label>
         </fieldset>
+        <fieldset>
+          <span class="menu_item" @click="switchOff">{{ _t('Exit') }}</span>
+        </fieldset>
       </div>
     </div>
     <div class="weather" :style="weather_block_style" v-show="!sidebar">
@@ -247,8 +250,6 @@
   import moment from "moment/dist/moment";
   import LineChart from "./components/LineChart.vue"
 
-  import HISTORY_REQUEST_PARAMS from "./history_request_params.ts";
-
   const isEmpty = obj => [Object, Array].includes((obj || {}).constructor) && !Object.entries((obj || {})).length;
 
   const STORAGE = window.localStorage;
@@ -257,443 +258,457 @@
   const HISTORY_UPDATES_INTERVAL = 7200000;  //TODO 2 hours
   const WEATHER_UPDATES_INTERVAL = 300000;  //TODO 5 minutes
 
-export default {
-  name: "App",
-  components: { LineChart },
-  data() {
-    return {
-      wxData: null,
-      historyData: null,
-      language: 'en-US',
-      timer: '',
-      updated_at: "",
-      show: false,
-      sidebar: false,
-      chartMode: false,
-      dataset: null,
-      settings: {
-        theme: 'theme-dark'
-      }
-    };
-  },
-  async mounted() {
-    this.setLanguage();
-    let savedSettings = JSON.parse(STORAGE.getItem("localSettings"));
-    if (!isEmpty(savedSettings)) {
-      this.settings = savedSettings
-    }
-  },
-  beforeDestroy() {
-    clearInterval(this.timer);
-  },
-  methods: {
-    async getWxData() {
-        try {
-          const response = await axios(REQUEST_PARAMS.url);
-          this.wxData = response.data.all.data;
-          this.updated_at = new Date().toLocaleTimeString('ru-RU', {
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: false
-          })
-          this.updateHistory(response.data.history);
-        } catch (error) {
-          console.error(this._t('Error fetching weather data:'), error);
+  const  onDeviceReady = () => {}
+
+  document.addEventListener("deviceready", onDeviceReady, false);
+
+  export default {
+    name: "App",
+    components: { LineChart },
+    data() {
+      return {
+        wxData: null,
+        historyData: null,
+        language: 'en-US',
+        timer: '',
+        updated_at: "",
+        show: false,
+        sidebar: false,
+        chartMode: false,
+        dataset: null,
+        settings: {
+          theme: 'theme-dark'
         }
+      };
     },
-    updateHistory(payload) {
-      this.historyData = JSON.parse(STORAGE.getItem('history'));
-      if (!this.history_is_ready) {
-        this.historyData = payload?.data;
-        this.historyData.updated_at = Date.now();
-        STORAGE.setItem('history', JSON.stringify(this.historyData));
+    async mounted() {
+      this.setLanguage();
+      let savedSettings = JSON.parse(STORAGE.getItem("localSettings"));
+      if (!isEmpty(savedSettings)) {
+        this.settings = savedSettings
       }
     },
-    setLanguage() {
-      this.language = window.navigator.language;
-      if (typeof document === 'object') {
-        let tagHtml = document.getElementsByTagName('html');
-        if(typeof tagHtml === 'object' && typeof tagHtml[0] !== 'undefined') {
-          if(typeof tagHtml[0] === 'object') {
-            if(tagHtml[0].getAttribute('lang') !== null) {
-              this.language = tagHtml[0].getAttribute('lang');
+    beforeDestroy() {
+      clearInterval(this.timer);
+    },
+    methods: {
+      async getWxData() {
+          try {
+            const response = await axios(REQUEST_PARAMS.url);
+            this.wxData = response.data.all.data;
+            this.updated_at = new Date().toLocaleTimeString('ru-RU', {
+              hour: '2-digit',
+              minute: '2-digit',
+              hour12: false
+            })
+            this.updateHistory(response.data.history);
+          } catch (error) {
+            console.error(this._t('Error fetching weather data:'), error);
+          }
+      },
+      updateHistory(payload) {
+        this.historyData = JSON.parse(STORAGE.getItem('history'));
+        if (!this.history_is_ready) {
+          this.historyData = payload?.data;
+          this.historyData.updated_at = Date.now();
+          STORAGE.setItem('history', JSON.stringify(this.historyData));
+        }
+      },
+      setLanguage() {
+        this.language = window.navigator.language;
+        if (typeof document === 'object') {
+          let tagHtml = document.getElementsByTagName('html');
+          if(typeof tagHtml === 'object' && typeof tagHtml[0] !== 'undefined') {
+            if(typeof tagHtml[0] === 'object') {
+              if(tagHtml[0].getAttribute('lang') !== null) {
+                this.language = tagHtml[0].getAttribute('lang');
+              }
             }
           }
+        } 
+        if(this.language === 'ru') {
+          this.language = 'ru-RU'; 
         }
-      } 
-      if(this.language === 'ru') {
-        this.language = 'ru-RU'; 
-      }
-      if(this.language === 'en') {
-        this.language = 'en-US'; 
-      }
-    },
-    _t(txt) {
-      let current = TRANSLATIONS[this.language];
-      if (typeof current !== 'undefined') {
-        return current[txt] ?? txt;
-      }
-      return txt;
-    },
-    start() {
-      if (this.show) {
-        clearInterval(this.timer);
-      } else {
-        this.getWxData();
-        this.timer = setInterval(this.getWxData, 300000);
-      }
-      this.show = !this.show;  
-    },
-    showChart(wx_param) {
-      if (wx_param === null) {
-        this.chartMode = false;
-      } else {
-        switch (wx_param) {
-          case 'temperature' :
-            this.dataset = this.temperature_history;
-            break;
-          case "humidity":
-            this.dataset = this.humidity_history;
-            break;
-          case "pressure":
-            this.dataset = this.pressure_history;
-            break;
-          case "solar":
-            this.dataset = this.solar_history;
-            break;
-          case "wind":
-            this.dataset = this.wind_history;
-            break;
-          case "rainfall":
-            this.dataset = this.rainfall_history;
-            break;
-          default:
-            this.dataset = this.temperature_history;
+        if(this.language === 'en') {
+          this.language = 'en-US'; 
         }
-        this.chartMode = true;
-      }
-    },
-    saveSettings() {
-      STORAGE.setItem("localSettings", JSON.stringify(this.settings));
-    }
-  },
-  computed: {
-    temperature_out() {
-      return this.wxData?.outdoor?.temperature?.value ?? null;
-    },
-    temperature_unit() {
-      return this.temperature_out !== null ? 
-        this._t(this.wxData?.outdoor?.temperature?.unit) : 
-        null;
-    },
-    pressure_abs() {
-      return this.wxData?.pressure?.absolute?.value ?? null;
-    },
-    pressure_rel() {
-      return this.wxData?.pressure?.relative?.value ?? null;
-    },
-    pressure_unit() {
-      return this.pressure_abs !== null ? 
-        this._t(this.wxData?.pressure?.absolute?.unit) : 
-        null;
-    },
-    humidity() {
-      return this.wxData?.outdoor?.humidity?.value ?? null;
-    },
-    humidity_unit() {
-      return this.humidity !== null ? 
-        this._t(this.wxData?.outdoor?.humidity?.unit) : 
-        null;
-    },
-    rain_hour() {
-      return this.wxData?.rainfall['1_hour']?.value ?? null;
-    },
-    rain_day() {
-      return this.wxData?.rainfall?.daily?.value ?? null;
-    },
-    rain_event() {
-      return this.wxData?.rainfall?.event?.value ?? null;
-    },
-    rain_week() {
-      return this.wxData?.rainfall?.weekly?.value ?? null;
-    },
-    rain_month() {
-      return this.wxData?.rainfall?.monthly?.value ?? null;
-    },
-    rain_year() {
-      return this.wxData?.rainfall?.yearly?.value ?? null;
-    },
-    rain_unit() {
-      return this._t(this.wxData?.rainfall?.daily?.unit ?? null);
-    },
-    wind_direction() {
-      return this.wxData?.wind?.wind_direction?.value ?? null;
-    },
-    wind_gust() {
-      return this.wxData?.wind?.wind_gust?.value ?? null;
-    },
-    wind_speed() {
-      return this.wxData?.wind?.wind_speed?.value ?? null;
-    },
-    wind_direction_unit() {
-      return this.wind_direction !== null ? 
-        this._t(this.wxData?.wind?.wind_direction?.unit) : 
-        null;
-    },
-    wind_speed_unit() {
-      return this.wind_speed !== null ? 
-        this._t(this.wxData?.wind?.wind_speed?.unit) : 
-        null;
-    },
-    wind_arrow_style() {
-      if (Boolean(this.wind_speed * 1) || Boolean(this.wind_gust * 1)) {
-        return 'transform:rotate(' + this.wind_direction + 'deg)';
-      }
-      return null;
-    },
-    solar() {
-      return this.wxData?.solar_and_uvi?.solar?.value ?? null;
-    },
-    solar_unit() {
-      return this.solar !== null ? 
-        this._t(this.wxData?.solar_and_uvi?.solar?.unit) : 
-        null;
-    },
-    uvi() {
-      return this.wxData?.solar_and_uvi?.uvi?.value ?? null;
-    },
-    uvi_unit() {
-      return this.uvi !== null ? 
-        this._t(this.wxData?.solar_and_uvi?.uvi?.unit) : 
-        null;
-    },
-    dew_point() {
-      return this.wxData?.outdoor?.dew_point?.value ?? null;
-    },
-    dew_point_unit() {
-      return this.dew_point !== null ? 
-        this._t(this.wxData?.outdoor?.dew_point?.unit) : 
-        null;
-    },
-    feels_like() {
-      return this.wxData?.outdoor?.feels_like?.value ?? null;
-    },
-    feels_like_unit() {
-      return this.feels_like !== null ? 
-        this._t(this.wxData?.outdoor?.feels_like?.unit) : 
-        null;
-    },
-    solar_rounded() {
-      let result = {
-        value: this.solar,
-        unit: this.solar_unit
-      };
-      if (this.solar > 5000) {
-        result.value = (Math.round(this.solar / 100) / 10),
-        result.unit = 'K' + this.solar_unit;
-      }
-      return result;
-    },
-    wind_rumb() {
-      if (isNaN(this.wind_direction)) {
-        return "";
-      }
-      let rumb = (this.wind_direction / 1) + 11.25;
-      if (rumb > 360) {
-        rumb = rumb - 360;
-      }
-      let rumbs = {
-        0 :'N', 
-        1 : 'NNE', 
-        2 : 'NE', 
-        3 : 'ENE', 
-        4 : 'E', 
-        5 : 'ESE', 
-        6 : 'SE', 
-        7 : 'SSE', 
-        8 : 'S', 
-        9 : 'SSW', 
-        10 : 'SW', 
-        11 : 'WSW', 
-        12 : 'W', 
-        13 : 'WNW', 
-        14 : 'NW', 
-        15 : 'NNW'
-      };
-      return rumbs[Math.floor(rumb / 22.5)];
-    },
-    weather_block_style() {
-      if (!this.show) {
-        return 'width: 270px;';
-      } else {
-        return '';
-      }
-    },
-    history_is_ready() {
-      if (this.historyData === null || this.historyData.updted_at === undefined) {
-        return false;
-      }
-      if (this.historyData.updated_at === null) {
-        return false;
-      }
-      let currentTimestamp = Date.now();
-      if (currentTimestamp - this.historyData.updated_at > HISTORY_UPDATES_INTERVAL) {
-        return false;
-      }
-      return true;
-    },
-    temperature_history() {
-      let temperatureHistory = this.historyData?.outdoor?.temperature?.list;
-      let labels = [];
-      let temperatureDataset = [];
-      Object.keys(temperatureHistory).forEach(key => {
-        if (!isNaN(key)) {
-          labels.push(moment.unix(key).format("DD.MM"))
-          temperatureDataset.push(parseFloat(temperatureHistory[key]));
+      },
+      _t(txt) {
+        let current = TRANSLATIONS[this.language];
+        if (typeof current !== 'undefined') {
+          return current[txt] ?? txt;
         }
-      });
-      return {
-        'labels':labels,
-        'datasets': [
-          {
-            data:temperatureDataset,
-            label: this._t('Temperature') + ', ' + this._t('℃'),  
-            borderColor: 'rgb(141, 172, 45)', 
-            backgroundColor: 'rgba(141, 172, 45, 0.3)',
-            pointRadius: 3
+        return txt;
+      },
+      start() {
+        if (this.show) {
+          clearInterval(this.timer);
+        } else {
+          this.getWxData();
+          this.timer = setInterval(this.getWxData, 300000);
+        }
+        this.show = !this.show;  
+      },
+      showChart(wx_param) {
+        if (wx_param === null) {
+          this.chartMode = false;
+        } else {
+          switch (wx_param) {
+            case 'temperature' :
+              this.dataset = this.temperature_history;
+              break;
+            case "humidity":
+              this.dataset = this.humidity_history;
+              break;
+            case "pressure":
+              this.dataset = this.pressure_history;
+              break;
+            case "solar":
+              this.dataset = this.solar_history;
+              break;
+            case "wind":
+              this.dataset = this.wind_history;
+              break;
+            case "rainfall":
+              this.dataset = this.rainfall_history;
+              break;
+            default:
+              this.dataset = this.temperature_history;
           }
-        ]
-      };
-    },
-    humidity_history() {
-      let humidityHistory = this.historyData?.outdoor?.humidity?.list;
-      let labels = [];
-      let humidityDataset = [];
-      Object.keys(humidityHistory).forEach(key => {
-        if (!isNaN(key)) {
-          labels.push(moment.unix(key).format("DD.MM"))
-          humidityDataset.push(parseFloat(humidityHistory[key]));
+          this.chartMode = true;
         }
-      });
-      return {
-        'labels':labels,
-        'datasets': [
-          {
-            data:humidityDataset,
-            label: this._t('Humidity')  + ', ' + this._t('%'), 
-            borderColor: 'rgb(141, 172, 45)', 
-            backgroundColor: 'rgba(141, 172, 45, 0.3)',
-            pointRadius: 3
-          }
-        ]
-      };
-    },
-    pressure_history() {
-      let pressureHistory = this.historyData?.pressure?.absolute?.list;
-      let labels = [];
-      let pressureDataset = [];
-      Object.keys(pressureHistory).forEach(key => {
-        if (!isNaN(key)) {
-          labels.push(moment.unix(key).format("DD.MM"))
-          pressureDataset.push(parseFloat(pressureHistory[key]));
+      },
+      saveSettings() {
+        STORAGE.setItem("localSettings", JSON.stringify(this.settings));
+      },
+      switchOff() {
+        if(!!navigator.app) {
+          navigator.app.exitApp();
+        } else {
+          setTimeout(() => {
+            let ww = window.open(window.location, '_self'); 
+            ww.close(); 
+          }, 300);
         }
-      });
-      return {
-        'labels':labels,
-        'datasets': [
-          {
-            data:pressureDataset,
-            label: this._t('Pressure') + ', ' + this._t('mmHg'), 
-            borderColor: 'rgb(141, 172, 45)', 
-            backgroundColor: 'rgba(141, 172, 45, 0.3)',
-            pointRadius: 3
-          }
-        ]
-      };
+      },
     },
-    wind_history() {
-      let windHistory = this.historyData?.wind?.wind_speed?.list;
-      let labels = [];
-      let windDataset = [];
-      Object.keys(windHistory).forEach(key => {
-        if (!isNaN(key)) {
-          labels.push(moment.unix(key).format("DD.MM"))
-          windDataset.push(parseFloat(windHistory[key]));
+    computed: {
+      temperature_out() {
+        return this.wxData?.outdoor?.temperature?.value ?? null;
+      },
+      temperature_unit() {
+        return this.temperature_out !== null ? 
+          this._t(this.wxData?.outdoor?.temperature?.unit) : 
+          null;
+      },
+      pressure_abs() {
+        return this.wxData?.pressure?.absolute?.value ?? null;
+      },
+      pressure_rel() {
+        return this.wxData?.pressure?.relative?.value ?? null;
+      },
+      pressure_unit() {
+        return this.pressure_abs !== null ? 
+          this._t(this.wxData?.pressure?.absolute?.unit) : 
+          null;
+      },
+      humidity() {
+        return this.wxData?.outdoor?.humidity?.value ?? null;
+      },
+      humidity_unit() {
+        return this.humidity !== null ? 
+          this._t(this.wxData?.outdoor?.humidity?.unit) : 
+          null;
+      },
+      rain_hour() {
+        return this.wxData?.rainfall['1_hour']?.value ?? null;
+      },
+      rain_day() {
+        return this.wxData?.rainfall?.daily?.value ?? null;
+      },
+      rain_event() {
+        return this.wxData?.rainfall?.event?.value ?? null;
+      },
+      rain_week() {
+        return this.wxData?.rainfall?.weekly?.value ?? null;
+      },
+      rain_month() {
+        return this.wxData?.rainfall?.monthly?.value ?? null;
+      },
+      rain_year() {
+        return this.wxData?.rainfall?.yearly?.value ?? null;
+      },
+      rain_unit() {
+        return this._t(this.wxData?.rainfall?.daily?.unit ?? null);
+      },
+      wind_direction() {
+        return this.wxData?.wind?.wind_direction?.value ?? null;
+      },
+      wind_gust() {
+        return this.wxData?.wind?.wind_gust?.value ?? null;
+      },
+      wind_speed() {
+        return this.wxData?.wind?.wind_speed?.value ?? null;
+      },
+      wind_direction_unit() {
+        return this.wind_direction !== null ? 
+          this._t(this.wxData?.wind?.wind_direction?.unit) : 
+          null;
+      },
+      wind_speed_unit() {
+        return this.wind_speed !== null ? 
+          this._t(this.wxData?.wind?.wind_speed?.unit) : 
+          null;
+      },
+      wind_arrow_style() {
+        if (Boolean(this.wind_speed * 1) || Boolean(this.wind_gust * 1)) {
+          return 'transform:rotate(' + this.wind_direction + 'deg)';
         }
-      });
-      return {
-        'labels':labels,
-        'datasets': [
-          {
-            data:windDataset,
-            label: this._t('Wind') + ', ' + this._t('m/s'), 
-            borderColor: 'rgb(141, 172, 45)', 
-            backgroundColor: 'rgba(141, 172, 45, 0.3)',
-            pointRadius: 3
-          }
-        ]
-      };
-    },
-    rainfall_history() {
-      let rainfallHistory = this.historyData?.rainfall?.event?.list;
-      let labels = [];
-      let rainfallDataset = [];
-      Object.keys(rainfallHistory).forEach(key => {
-        if (!isNaN(key)) {
-          labels.push(moment.unix(key).format("DD.MM"))
-          rainfallDataset.push(parseFloat(rainfallHistory[key]));
+        return null;
+      },
+      solar() {
+        return this.wxData?.solar_and_uvi?.solar?.value ?? null;
+      },
+      solar_unit() {
+        return this.solar !== null ? 
+          this._t(this.wxData?.solar_and_uvi?.solar?.unit) : 
+          null;
+      },
+      uvi() {
+        return this.wxData?.solar_and_uvi?.uvi?.value ?? null;
+      },
+      uvi_unit() {
+        return this.uvi !== null ? 
+          this._t(this.wxData?.solar_and_uvi?.uvi?.unit) : 
+          null;
+      },
+      dew_point() {
+        return this.wxData?.outdoor?.dew_point?.value ?? null;
+      },
+      dew_point_unit() {
+        return this.dew_point !== null ? 
+          this._t(this.wxData?.outdoor?.dew_point?.unit) : 
+          null;
+      },
+      feels_like() {
+        return this.wxData?.outdoor?.feels_like?.value ?? null;
+      },
+      feels_like_unit() {
+        return this.feels_like !== null ? 
+          this._t(this.wxData?.outdoor?.feels_like?.unit) : 
+          null;
+      },
+      solar_rounded() {
+        let result = {
+          value: this.solar,
+          unit: this.solar_unit
+        };
+        if (this.solar > 5000) {
+          result.value = (Math.round(this.solar / 100) / 10),
+          result.unit = 'K' + this.solar_unit;
         }
-      });
-      return {
-        'labels':labels,
-        'datasets': [
-          {
-            data:rainfallDataset,
-            label: this._t('Rain') + ', ' + this._t('mm'),  
-            borderColor: 'rgb(141, 172, 45)', 
-            backgroundColor: 'rgba(141, 172, 45, 0.3)',
-            pointRadius: 3
-          }
-        ]
-      };
-    },
-    solar_history() {
-      let solarHistory = this.historyData?.solar_and_uvi?.solar?.list;
-      let labels = [];
-      let solarDataset = [];
-      Object.keys(solarHistory).forEach(key => {
-        if (!isNaN(key)) {
-          if (moment.unix(key).hour() === 15) {
+        return result;
+      },
+      wind_rumb() {
+        if (isNaN(this.wind_direction)) {
+          return "";
+        }
+        let rumb = (this.wind_direction / 1) + 11.25;
+        if (rumb > 360) {
+          rumb = rumb - 360;
+        }
+        let rumbs = {
+          0 :'N', 
+          1 : 'NNE', 
+          2 : 'NE', 
+          3 : 'ENE', 
+          4 : 'E', 
+          5 : 'ESE', 
+          6 : 'SE', 
+          7 : 'SSE', 
+          8 : 'S', 
+          9 : 'SSW', 
+          10 : 'SW', 
+          11 : 'WSW', 
+          12 : 'W', 
+          13 : 'WNW', 
+          14 : 'NW', 
+          15 : 'NNW'
+        };
+        return rumbs[Math.floor(rumb / 22.5)];
+      },
+      weather_block_style() {
+        if (!this.show) {
+          return 'width: 270px; margin: 15px 0 0 5px';
+        } else {
+          return '';
+        }
+      },
+      history_is_ready() {
+        if (this.historyData === null || this.historyData.updted_at === undefined) {
+          return false;
+        }
+        if (this.historyData.updated_at === null) {
+          return false;
+        }
+        let currentTimestamp = Date.now();
+        if (currentTimestamp - this.historyData.updated_at > HISTORY_UPDATES_INTERVAL) {
+          return false;
+        }
+        return true;
+      },
+      temperature_history() {
+        let temperatureHistory = this.historyData?.outdoor?.temperature?.list;
+        let labels = [];
+        let temperatureDataset = [];
+        Object.keys(temperatureHistory).forEach(key => {
+          if (!isNaN(key)) {
             labels.push(moment.unix(key).format("DD.MM"))
-            solarDataset.push(parseFloat(solarHistory[key]));
+            temperatureDataset.push(parseFloat(temperatureHistory[key]));
           }
+        });
+        return {
+          'labels':labels,
+          'datasets': [
+            {
+              data:temperatureDataset,
+              label: this._t('Temperature') + ', ' + this._t('℃'),  
+              borderColor: 'rgb(141, 172, 45)', 
+              backgroundColor: 'rgba(141, 172, 45, 0.3)',
+              pointRadius: 3
+            }
+          ]
+        };
+      },
+      humidity_history() {
+        let humidityHistory = this.historyData?.outdoor?.humidity?.list;
+        let labels = [];
+        let humidityDataset = [];
+        Object.keys(humidityHistory).forEach(key => {
+          if (!isNaN(key)) {
+            labels.push(moment.unix(key).format("DD.MM"))
+            humidityDataset.push(parseFloat(humidityHistory[key]));
+          }
+        });
+        return {
+          'labels':labels,
+          'datasets': [
+            {
+              data:humidityDataset,
+              label: this._t('Humidity')  + ', ' + this._t('%'), 
+              borderColor: 'rgb(141, 172, 45)', 
+              backgroundColor: 'rgba(141, 172, 45, 0.3)',
+              pointRadius: 3
+            }
+          ]
+        };
+      },
+      pressure_history() {
+        let pressureHistory = this.historyData?.pressure?.absolute?.list;
+        let labels = [];
+        let pressureDataset = [];
+        Object.keys(pressureHistory).forEach(key => {
+          if (!isNaN(key)) {
+            labels.push(moment.unix(key).format("DD.MM"))
+            pressureDataset.push(parseFloat(pressureHistory[key]));
+          }
+        });
+        return {
+          'labels':labels,
+          'datasets': [
+            {
+              data:pressureDataset,
+              label: this._t('Pressure') + ', ' + this._t('mmHg'), 
+              borderColor: 'rgb(141, 172, 45)', 
+              backgroundColor: 'rgba(141, 172, 45, 0.3)',
+              pointRadius: 3
+            }
+          ]
+        };
+      },
+      wind_history() {
+        let windHistory = this.historyData?.wind?.wind_speed?.list;
+        let labels = [];
+        let windDataset = [];
+        Object.keys(windHistory).forEach(key => {
+          if (!isNaN(key)) {
+            labels.push(moment.unix(key).format("DD.MM"))
+            windDataset.push(parseFloat(windHistory[key]));
+          }
+        });
+        return {
+          'labels':labels,
+          'datasets': [
+            {
+              data:windDataset,
+              label: this._t('Wind') + ', ' + this._t('m/s'), 
+              borderColor: 'rgb(141, 172, 45)', 
+              backgroundColor: 'rgba(141, 172, 45, 0.3)',
+              pointRadius: 3
+            }
+          ]
+        };
+      },
+      rainfall_history() {
+        let rainfallHistory = this.historyData?.rainfall?.event?.list;
+        let labels = [];
+        let rainfallDataset = [];
+        Object.keys(rainfallHistory).forEach(key => {
+          if (!isNaN(key)) {
+            labels.push(moment.unix(key).format("DD.MM"))
+            rainfallDataset.push(parseFloat(rainfallHistory[key]));
+          }
+        });
+        return {
+          'labels':labels,
+          'datasets': [
+            {
+              data:rainfallDataset,
+              label: this._t('Rain') + ', ' + this._t('mm'),  
+              borderColor: 'rgb(141, 172, 45)', 
+              backgroundColor: 'rgba(141, 172, 45, 0.3)',
+              pointRadius: 3
+            }
+          ]
+        };
+      },
+      solar_history() {
+        let solarHistory = this.historyData?.solar_and_uvi?.solar?.list;
+        let labels = [];
+        let solarDataset = [];
+        Object.keys(solarHistory).forEach(key => {
+          if (!isNaN(key)) {
+            if (moment.unix(key).hour() === 15) {
+              labels.push(moment.unix(key).format("DD.MM"))
+              solarDataset.push(parseFloat(solarHistory[key]));
+            }
+          }
+        });
+        return {
+          'labels':labels,
+          'datasets': [
+            {
+              data:solarDataset,
+              label: this._t('Illumination') + ', ' + this._t('lx'), 
+              borderColor: 'rgb(141, 172, 45)', 
+              backgroundColor: 'rgba(141, 172, 45, 0.3)',
+              pointRadius: 3
+            }
+          ]
+        };
+      },
+      sidebar_class() {
+        if (!this.sidebar) {
+          return 'hidden';
+        } else {
+          return 'active';
         }
-      });
-      return {
-        'labels':labels,
-        'datasets': [
-          {
-            data:solarDataset,
-            label: this._t('Illumination') + ', ' + this._t('lx'), 
-            borderColor: 'rgb(141, 172, 45)', 
-            backgroundColor: 'rgba(141, 172, 45, 0.3)',
-            pointRadius: 3
-          }
-        ]
-      };
-    },
-    sidebar_class() {
-      if (!this.sidebar) {
-        return 'hidden';
-      } else {
-        return 'active';
-      }
-     },
-     main_section_class() {
-      return 'main-section ' + this.settings.theme;
-     }
+       },
+       main_section_class() {
+        return 'main-section ' + this.settings.theme;
+       }
+    }
   }
-}
 </script>
 
 <style scoped>

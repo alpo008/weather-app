@@ -15,6 +15,7 @@ coverage
 *.local
 
 src/assets/*.png
+src/assets/*.jpg
 
 /cypress/videos/
 /cypress/screenshots/

@@ -14,6 +14,9 @@ body {
     font-family: 'Roboto', sans-serif;
     background-color: #f8fafa;
     color: #333;
+    background-image:url(bg-img.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 .container {
@@ -262,10 +265,21 @@ body {
     z-index: 2;
     text-align: center;
     color: rgb(245, 245, 255);
+    transform: rotate(90deg);
 }
 
-.toggler:hover {
+.theme-dark .toggler:hover, .theme-dark .menu_item:hover {
     background-color: darkslategrey;
+}
+
+.theme-light .toggler:hover, .theme-light .menu_item:hover {
+    background-color: rgba(200, 200, 200, 0.2);
+}
+
+.menu_item {
+    color: rgb(245, 245, 255);
+    cursor: pointer;
+    margin-left: 8px;
 }
 
 
@@ -298,10 +312,7 @@ body {
         background-color: rgb(245, 245, 255);
         color: rgb(96, 95, 92);
     }
-    .toggler {
+    .toggler, .menu_item {
         color: rgb(96, 95, 92);
-    }
-    .toggler:hover {
-        background-color: lightgrey;
     }
 }

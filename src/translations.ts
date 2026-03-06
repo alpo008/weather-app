@@ -6,6 +6,7 @@ const translations = {
         "Dew point" : "Точка росы",
         "Error fetching weather data:" : "Ошибка получения данных:",
         "Event" : "За сегодня",
+        "Exit" : "Выход",
         "Feels like" : "Ощущается как",
         "Gust" : "Порывы до",
         "Hourly" : "За сутки",
