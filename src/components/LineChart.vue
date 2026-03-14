@@ -3,7 +3,7 @@
     id="history_chart"
     :options="chartOptions"
     :data="history"
-    width="100%"
+    width="100vw"
   />
 </template>
 

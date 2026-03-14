@@ -13,71 +13,16 @@ html, body {
 body {
     font-family: 'Roboto', sans-serif;
     background-color: #f8fafa;
-    color: #333;
-    background-image:url(bg-img.jpg);
     background-repeat: no-repeat;
     background-size: cover;
-}
-
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem;
-}
-
-/* Header */
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2rem;
-}
-
-.header h1 {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 2.5rem;
-    color: #2b6cb0;
-    margin: 0;
 }
 
 /* Weather Widget */
 .weather {
     text-align: center;
-    width: 100%;
-    color: #fff;
-    margin-top: -4px;
-    background-color: rgb(43, 46, 53);
     border-radius: 3px;
     box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.1);
-    position: static;
     transition: width 0.5s linear;
-}
-
-.weather h2 {
-    font-size: 1.7rem;
-    margin-bottom: 0.3rem;
-    margin-block-start: 0.3rem;
-    cursor: pointer;
-}
-
-.wrapper {
-    display: flex;
-    flex-wrap: wrap;
-    padding: 1px;
-}
-
-.params_block_wrapper {
-    border: 2px solid rgba(141, 172, 45, 0.2);
-    flex-grow: 1;
- }
-
-.params_block {
-    display: flex;
-    flex-wrap: wrap;
-    padding: 4px;
-    margin: 0 1px;
-    justify-content: space-between;
-    flex-grow: 1;
 }
 
 .temp-box {
@@ -86,7 +31,7 @@ body {
     flex-grow: 1;
 }
 
-.wx_parameter {
+.wx-parameter {
     font-size: 35px;
     font-weight: 700;
     height: auto;
@@ -94,11 +39,7 @@ body {
 }
 
 .text-small {
-    color: rgb(159, 160, 163);
-}
-
-.text-bolder {
-    font-weight: 500;
+    color: rgb(110, 115, 118);
 }
 
 .text-green {
@@ -106,36 +47,10 @@ body {
     margin-right: 1px;
 }
 
-.text-white {
-    color: rgb(255, 255, 255);
-}
-
 .wind-rumb {
     font-size: 1rem;
     position:relative;
     top:-28px;
-}
-
-.align-center {
-    align-content: center;
-}
-
-.justify-start {
-    justify-self: start;
-}
-
-.space-between {
-    display: flex;
-    justify-content: space-between;
-}
-
-.ml20 {
-    margin-left: 20px;
-}
-
-.pt-l-4 {
-    top: 4px;
-    left: 4px;
 }
 
 .height130 {
@@ -159,14 +74,6 @@ body {
 .temp-min {
     font-size: 1.2rem;
     margin-bottom: 0.5rem;
-}
-
-.desc {
-    color: #555;
-}
-
-.test {
-    min-width: 100%;
 }
 
 .wind-arrow {
@@ -198,8 +105,6 @@ body {
 .link-icon-left {
     width: 20px;
     height: 20px;
-    position: relative;
-    justify-self: flex-start;
     cursor: pointer;
 }
 
@@ -216,63 +121,19 @@ body {
     background-repeat: no-repeat;
 }
 
-.close-icon-right {
-    position: absolute;
-    right: 7px;
-    top: 73px;
-    cursor: pointer;
-    border: 1px solid grey;
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    line-height: 20px;
-}
-
 .link-icon-left:hover, .link-icon-right:hover, .close-icon-right:hover {
     background-color: darkslategrey;
 }
 
-#sidebar {
-    position: fixed;
-    top: 0;
-    z-index: 1;
-    box-shadow: 1px 1px 2px 1px rgba(0, 0, 0, 0.2);
-    padding: 5vh 0.5vw 0.5vh 1vw;
-    color: rgb(245, 245, 255);
-}
-#sidebar.active {
-    display: block;
-    background-color: rgb(03, 46, 53);
-    width: 98vw;
-    height: 50%;
-    line-height:40px;
-}
-
-#sidebar.hidden {
-    display: none;
-}
-
 .toggler {
-    font-size: 2rem;
-    line-height: 0.9rem;
-    height: 2rem;
-    width: 2rem;
-    position: absolute;
-    left: 7px;
-    top: 2px;
-    cursor: pointer;
-    border-radius: 50%;
-    z-index: 2;
-    text-align: center;
-    color: rgb(245, 245, 255);
-    transform: rotate(90deg);
+    font-size: 2em;
 }
 
 .theme-dark .toggler:hover, .theme-dark .menu_item:hover {
     background-color: darkslategrey;
 }
 
-.theme-light .toggler:hover, .theme-light .menu_item:hover {
+.v-theme-light .toggler:hover, .v-theme-light .menu_item:hover {
     background-color: rgba(200, 200, 200, 0.2);
 }
 
@@ -282,37 +143,10 @@ body {
     margin-left: 8px;
 }
 
-
-.theme-light {
-    .weather {
-        color: #333;
-        background-color: rgb(245, 245, 255);
-        box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.7);
-    }
-    .text-white {
-        color: #554;
-    }
-    .text-small{
-        color: rgb(96, 95, 92);
-    }
-    .text-green {
-        color: rgb(23, 125, 81);
-    }
-    .text-unit {
-        color: rgb(46, 95, 92);
-    }
-    .chart-link {
-        background-image: url(chart_th-light.png);
-        background-repeat: no-repeat;
-    }
-    .link-icon-left:hover, .link-icon-right:hover, .close-icon-right:hover {
-        background-color: azure;
-    }
-    #sidebar {
-        background-color: rgb(245, 245, 255);
-        color: rgb(96, 95, 92);
-    }
-    .toggler, .menu_item {
-        color: rgb(96, 95, 92);
-    }
+.v-btn.v-theme--light {
+    color:rgb(80, 80, 80);
 }
+
+
+
+

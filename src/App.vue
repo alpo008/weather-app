@@ -1,43 +1,65 @@
 <template>
-  <main :class="main_section_class">
-    <span class="toggler" v-if="show" @click="sidebar=!sidebar">  &hellip;</span>
-    <div id="sidebar" :class="sidebar_class">
-      <div>
-        <fieldset>
-          <legend>{{ _t('Theme') }}</legend>
-          <input type="radio" value="theme-light" v-model="settings.theme" @change="saveSettings"/>
-          <label for="huey">{{ _t('Light') }}</label>
-          <input type="radio" value="theme-dark" v-model="settings.theme" @change="saveSettings"/>
-          <label for="dewey">{{ _t('Dark') }}</label>
-        </fieldset>
-        <fieldset>
-          <span class="menu_item" @click="switchOff">{{ _t('Exit') }}</span>
-        </fieldset>
-      </div>
-    </div>
-    <div class="weather" :style="weather_block_style" v-show="!sidebar">
-      <h2 @click="start">{{ _t('Our meteostation') }}</h2>
-      <div v-if="show"> 
-        {{ _t('Updated at') }} {{ updated_at }}
-        <div class="wrapper" v-if="!chartMode">
-          <div class="params_block_wrapper">
-            <div class="params_block">
+  <v-layout>
+    <v-theme-provider :theme="settings.themeLight ? 'light' : 'dark'">
+      <v-app-bar>
+        <v-app-bar-nav-icon variant="text" class="toggler" @click.stop="drawer = !drawer">
+          &equiv;
+        </v-app-bar-nav-icon>
+
+        <v-btn density="compact" @click="startMeteo" :active="showMeteo">
+          {{ _t('Meteostation') }}
+        </v-btn>
+      </v-app-bar>
+      <v-navigation-drawer
+        v-model="drawer"
+        temporary
+        class="pt-12"
+      >
+        <v-list>
+          <v-list-item>
+            <v-btn class="w-100" @click="settings.themeLight = !settings.themeLight">
+             {{ _t(settings.themeLight ? 'Dark theme' : 'Light theme')}}
+            </v-btn>
+          </v-list-item>
+          <v-divider></v-divider>
+          <v-list-item>
+            <v-btn class="w-100" @click="switchOff">
+             {{ _t('Exit')}}
+            </v-btn>
+          </v-list-item>
+        </v-list>
+      </v-navigation-drawer>
+  <v-card
+    class="mx-auto text-center mt-16"
+    :subtitle="_t('Updated at') + ' : ' + updated_at"
+    v-if="showMeteo"
+    style="width:-webkit-fill-available;"
+  >
+    <template v-slot:title>
+      <span class="font-weight-black">{{ _t('Our meteostation') }}</span>
+    </template>
+    <v-card-text class="bg-surface-light pr-1 pl-1">
+    <div class="weather">
+      <div v-if="true"> 
+        <div class="d-flex flex-wrap" v-if="!chartMode">
+          <div class="border-md flex-grow-1">
+            <div class="d-flex flex-grow-1 flex-nowrap justify-space-between pa-1">
               <div class="temp-box">
                 <div class="link-icon-left chart-link" 
                   @click="showChart('temperature')" 
                   :title="_t('Show chart')"
                 >
                 </div>
-                <div class="text-small text-white text-bolder">
+                <div class=" font-weight-medium">
                   {{ _t('Temperature') }}
                 </div>
-                <div class="wx_parameter">
+                <div class="wx-parameter">
                   {{ temperature_out }} 
                   <span class="text-unit">
                     {{ temperature_unit }}
                   </span>
                 </div>
-                <div class="text-small">
+                <div class="">
                   {{ _t('Feels like') }}
                   <span class="text-green">
                     {{ feels_like }} {{ feels_like_unit }}
@@ -45,21 +67,21 @@
                 </div>
               </div>
               <div class="temp-box">
-                <div class="link-icon-right chart-link" 
+                <div class="link-icon-left chart-link" 
                   @click="showChart('humidity')" 
                   :title="_t('Show chart')"
                 >
                 </div>
-                <div class="text-small text-white text-bolder">
+                <div class=" font-weight-medium">
                   {{ _t('Humidity') }}
                 </div>
-                <div class="wx_parameter">
+                <div class="wx-parameter">
                   {{ humidity }} 
                   <span class="text-unit">
                     {{ humidity_unit }}
                   </span>
                 </div>
-                <div class="text-small">
+                <div class="">
                   {{ _t('Dew point') }}
                   <span class="text-green">
                     {{ dew_point }} {{ dew_point_unit }}
@@ -68,21 +90,21 @@
               </div>
             </div>
           </div>
-          <div class="params_block_wrapper">
-                <div class="link-icon-left chart-link pt-l-4" 
-                  @click="showChart('pressure')" 
-                  :title="_t('Show chart')"
-                >
-                </div>
-            <div class="text-small text-white text-bolder">
+          <div class="border-md flex-grow-1">
+            <div class="link-icon-left chart-link pt-l-4" 
+              @click="showChart('pressure')" 
+              :title="_t('Show chart')"
+            >
+            </div>
+            <div class=" font-weight-medium">
               {{ _t('Pressure') }} 
             </div>
-            <div class="params_block">
+            <div class="d-flex flex-grow-1 flex-nowrap justify-space-between pa-1">
               <div class="temp-box">
-                <div class="text-small">
+                <div class="">
                   {{ _t('Absolute') }}
                 </div>
-                <div class="wx_parameter">
+                <div class="wx-parameter">
                   {{ pressure_abs }}
                   <span class="text-unit">
                     {{ pressure_unit }}
@@ -90,10 +112,10 @@
                 </div>
               </div>
               <div class="temp-box">
-                <div class="text-small">
+                <div class="">
                   {{ _t('Relative') }}
                 </div>
-                <div class="wx_parameter">
+                <div class="wx-parameter">
                   {{ pressure_rel }}
                   <span class="text-unit">
                     {{ pressure_unit }}
@@ -102,21 +124,21 @@
               </div>
             </div>
           </div>
-          <div class="params_block_wrapper">
+          <div class="border-md flex-grow-1">
                 <div class="link-icon-left chart-link pt-l-4" 
                   @click="showChart('solar')" 
                   :title="_t('Show chart')"
                 >
                 </div>
-            <div class="text-small text-white text-bolder">
+            <div class=" font-weight-medium">
               {{ _t('Solar and UVI') }}
             </div>
-            <div class="params_block">
+            <div class="d-flex flex-grow-1 flex-nowrap justify-space-between pa-1">
               <div class="temp-box">
-                <div class="text-small">
+                <div class="">
                   {{ _t('Illumination') }}
                 </div>
-                <div class="wx_parameter">
+                <div class="wx-parameter">
                   {{ solar_rounded.value }}
                   <span class="text-unit">
                     {{ solar_rounded.unit }}
@@ -124,10 +146,10 @@
                 </div>
               </div>
               <div class="temp-box">
-                <div class="text-small">
+                <div class="">
                   {{ _t('UVI') }}
                 </div>
-                <div class="wx_parameter">
+                <div class="wx-parameter">
                   {{ uvi }}
                   <span class="text-unit">
                     {{ uvi_unit }}
@@ -136,21 +158,21 @@
               </div>
             </div>
           </div>
-          <div class="params_block_wrapper">
+          <div class="border-md flex-grow-1">
               <div class="link-icon-left chart-link pt-l-4" 
                 @click="showChart('wind')" 
                 :title="_t('Show chart')"
               >
               </div>
-            <div class="text-small text-white text-bolder">
+            <div class=" font-weight-medium">
               {{ _t('Wind') }}
             </div>
-            <div class="params_block">
+            <div class="d-flex flex-grow-1 flex-nowrap justify-space-between pa-1">
               <div class="temp-box">
-                <div class="text-small">
+                <div class="">
                   {{ _t('Speed') }}
                 </div>
-                <div class="wx_parameter">
+                <div class="wx-parameter">
                   {{ wind_speed }}
                   <span class="text-unit">
                     {{ wind_speed_unit }}
@@ -159,7 +181,7 @@
               </div>
               <div class="temp-box height130" v-if="!!wind_arrow_style">
                 <div class="wind-arrow" :style="wind_arrow_style"></div>
-                <div class="wx_parameter" style="position:relative;top:-100px;">
+                <div class="wx-parameter" style="position:relative;top:-100px;">
                   {{ wind_direction }}
                   <span class="text-unit">
                     {{ wind_direction_unit }}
@@ -168,10 +190,10 @@
                 </div>
               </div>
               <div class="temp-box">
-                <div class="text-small">
+                <div class="">
                   {{ _t('Gust') }}
                 </div>
-                <div class="wx_parameter">
+                <div class="wx-parameter">
                   {{ wind_gust }}
                   <span class="text-unit">
                     {{ wind_speed_unit }}
@@ -180,48 +202,48 @@
               </div>
             </div>
           </div>
-          <div class="params_block_wrapper">
+          <div class="border-md flex-grow-1">
             <div class="link-icon-left chart-link pt-l-4" 
               @click="showChart('rainfall')" 
               :title="_t('Show chart')"
             >
             </div>
-            <div class="text-small text-white text-bolder">
+            <div class=" font-weight-medium">
               {{ _t('Rain') }}
             </div>
-            <div class="params_block">
+            <div class="d-flex flex-grow-1 flex-nowrap justify-space-between pa-1">
               <div class="temp-box">
-                <div class="text-small">
+                <div class="">
                   {{ _t('Per hour') }}
                 </div>
-                <div class="wx_parameter">
+                <div class="wx-parameter">
                   {{ rain_hour }} 
                   <span class="text-unit">
                     {{ rain_unit }}
                   </span>
                 </div>
-                <div class="text-small">
+                <div class="">
                   {{ _t('Per day') }}
                 </div>
-                <div class="wx_parameter">
+                <div class="wx-parameter">
                   {{ rain_day }} 
                   <span class="text-unit">
                     {{ rain_unit }}
                   </span>
                 </div>
               </div>
-              <div class="temp-box align-center">
-                <div class="text-small space-between" style="height:2em;">
+              <div class="temp-box align-content-center">
+                <div class="d-flex justify-space-around" style="height:2em;">
                   {{ _t('Weekly') }} <span class="text-green">
                     {{ rain_week }} {{ rain_unit }}
                   </span>
                 </div>
-                <div class="text-small space-between" style="height:2em;">
+                <div class="d-flex justify-space-around" style="height:2em;">
                   {{ _t('Monthly') }} <span class="text-green">
                     {{ rain_month }} {{ rain_unit }}
                   </span>
                 </div>
-                <div class="text-small space-between" style="height:2em;">
+                <div class="d-flex justify-space-around" style="height:2em;">
                   {{ _t('Yearly') }} <span class="text-green">
                     {{ rain_year }} {{ rain_unit }}
                   </span>
@@ -230,17 +252,18 @@
             </div>
           </div>
         </div>
-        <div class="wrapper" v-if="chartMode">
-          <div class="params_block">
-            <div class="close-icon-right" @click="showChart(null)" :title="_t('Close')">
-                &#65794;
-            </div>
-            <LineChart :history="dataset" style="" />
+        <div class="d-flex flex-wrap" v-if="chartMode">
+          <div class="d-flex flex-grow-1 flex-nowrap justify-space-between pa-1">
+            <v-btn density="default" @click="showChart(null)" :title="_t('Close')">&#65794;</v-btn>
+            <LineChart :history="dataset" />
           </div>
         </div>
       </div>
     </div>
-  </main>
+    </v-card-text>
+  </v-card>
+</v-theme-provider>
+</v-layout>
 </template>
 
 <script lang="ts">
@@ -248,7 +271,7 @@
   import REQUEST_PARAMS from "./request_params.ts";
   import TRANSLATIONS from "./translations.ts";
   import moment from "moment/dist/moment";
-  import LineChart from "./components/LineChart.vue"
+  import LineChart from "./components/LineChart.vue";
 
   const isEmpty = obj => [Object, Array].includes((obj || {}).constructor) && !Object.entries((obj || {})).length;
 
@@ -272,21 +295,23 @@
         language: 'en-US',
         timer: '',
         updated_at: "",
-        show: false,
+        showMeteo: false,
         sidebar: false,
         chartMode: false,
         dataset: null,
         settings: {
-          theme: 'theme-dark'
-        }
-      };
+          themeLight: false
+        },
+        drawer: false
+      }
     },
     async mounted() {
       this.setLanguage();
       let savedSettings = JSON.parse(STORAGE.getItem("localSettings"));
       if (!isEmpty(savedSettings)) {
-        this.settings = savedSettings
+        this.settings = savedSettings;
       }
+      this.startMeteo();
     },
     beforeDestroy() {
       clearInterval(this.timer);
@@ -340,14 +365,16 @@
         }
         return txt;
       },
-      start() {
-        if (this.show) {
+      startMeteo() {
+        if (this.showMeteo) {
           clearInterval(this.timer);
         } else {
           this.getWxData();
           this.timer = setInterval(this.getWxData, 300000);
+          this.drawer = false;
         }
-        this.show = !this.show;  
+        this.showChart(null);
+        this.showMeteo = !this.showMeteo;  
       },
       showChart(wx_param) {
         if (wx_param === null) {
@@ -390,7 +417,7 @@
             ww.close(); 
           }, 300);
         }
-      },
+      }
     },
     computed: {
       temperature_out() {
@@ -536,13 +563,6 @@
           15 : 'NNW'
         };
         return rumbs[Math.floor(rumb / 22.5)];
-      },
-      weather_block_style() {
-        if (!this.show) {
-          return 'width: 270px; margin: 15px 0 0 5px';
-        } else {
-          return '';
-        }
       },
       history_is_ready() {
         if (this.historyData === null || this.historyData.updted_at === undefined) {
@@ -695,18 +715,8 @@
               pointRadius: 3
             }
           ]
-        };
-      },
-      sidebar_class() {
-        if (!this.sidebar) {
-          return 'hidden';
-        } else {
-          return 'active';
         }
-       },
-       main_section_class() {
-        return 'main-section ' + this.settings.theme;
-       }
+      }
     }
   }
 </script>
