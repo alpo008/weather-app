@@ -33,4 +33,4 @@ src/assets/*.jpg
 *.tsbuildinfo
 
 src/request_params.ts
-src/history_request_params.ts
+src/config.ts
