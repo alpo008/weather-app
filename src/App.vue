@@ -29,7 +29,7 @@
           </v-list-item>
           <v-list-item>
             <v-btn class="w-100" 
-              @click="settings.themeLight = !settings.themeLight"
+              @click="changeTheme()"
               style="justify-content: start;"
             >
              {{ _t(settings.themeLight ? 'Dark theme' : 'Light theme')}}
@@ -50,7 +50,7 @@
             </v-btn>
           </v-list-item>
           <v-list-item>
-            <v-img :src="news_image" style="width:320px;margin-top:20px;">
+            <v-img :src="news_image" style="width:220px;margin-top:5px;">
             </v-img>
           </v-list-item>
         </v-list>
@@ -289,6 +289,16 @@
         </div>
         </v-card-text>
       </v-card>
+      <v-overlay
+        :model-value="loader"
+        class="align-center justify-center"
+      >
+        <v-progress-circular
+          color="primary"
+          size="64"
+          indeterminate
+        ></v-progress-circular>
+    </v-overlay>
     </v-theme-provider>
   </v-layout>
 </template>
@@ -331,7 +341,8 @@
         },
         drawer: false,
         news_ticker: '',
-        news_image: null
+        news_image: null,
+        loader: false
       }
     },
     async mounted() {
@@ -345,6 +356,7 @@
     },
     methods: {
       async getWxData() {
+        this.loader = true;
           try {
             const response = await axios(CONFIG.weatherUrl);
             this.wxData = response.data.all.data;
@@ -357,6 +369,7 @@
           } catch (error) {
             console.error(this._t('Error fetching weather data:'), error);
           }
+          this.loader = false;
       },
       async getNews() {
         try {
@@ -397,6 +410,10 @@
         }
         this.saveSettings();
         this.setLanguage();
+      },
+      changeTheme() {
+        this.settings.themeLight = !this.settings.themeLight;
+        this.saveSettings();
       },
       updateSettings() {
         const savedSettings = JSON.parse(STORAGE.getItem("localSettings"));
