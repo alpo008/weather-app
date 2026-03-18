@@ -121,30 +121,46 @@ body {
     background-repeat: no-repeat;
 }
 
-.link-icon-left:hover, .link-icon-right:hover, .close-icon-right:hover {
-    background-color: darkslategrey;
+.link-icon-left:hover {
+    background-color: grey;
 }
 
 .toggler {
     font-size: 2em;
 }
 
-.theme-dark .toggler:hover, .theme-dark .menu_item:hover {
+.theme-dark .toggler:hover, .theme-dark {
     background-color: darkslategrey;
 }
 
-.v-theme-light .toggler:hover, .v-theme-light .menu_item:hover {
+.v-theme-light .toggler:hover, .v-theme-light {
     background-color: rgba(200, 200, 200, 0.2);
-}
-
-.menu_item {
-    color: rgb(245, 245, 255);
-    cursor: pointer;
-    margin-left: 8px;
 }
 
 .v-btn.v-theme--light {
     color:rgb(80, 80, 80);
+}
+
+/*    R U N N I N G  L I N E    */
+.ticker{
+  height: auto;
+  width:300px;
+  margin:0 auto;
+}
+.ticker p{
+  text-align:center;
+  animation: text 8s infinite linear;
+  padding-left: 1000px;
+  white-space: nowrap;
+}
+@keyframes text {
+  0%{
+    transform: translate(0, 0);
+  }
+  
+  100%{
+    transform: translate(-160%, 0);
+  }
 }
 
 

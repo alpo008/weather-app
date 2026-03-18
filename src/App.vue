@@ -1,274 +1,301 @@
 <template>
   <v-layout>
     <v-theme-provider :theme="settings.themeLight ? 'light' : 'dark'">
-      <v-app-bar>
+      <v-app-bar density="compact">
         <v-app-bar-nav-icon variant="text" class="toggler" @click.stop="drawer = !drawer">
           &equiv;
         </v-app-bar-nav-icon>
-
-        <v-btn density="compact" @click="startMeteo" :active="showMeteo">
-          {{ _t('Meteostation') }}
-        </v-btn>
+        <v-toolbar-title class="ticker" v-if="news_ticker.length"> 
+        <p>
+          {{ news_ticker }}
+        </p>
+        </v-toolbar-title>
       </v-app-bar>
       <v-navigation-drawer
         v-model="drawer"
         temporary
-        class="pt-12"
+        :location="$vuetify.display.mobile ? 'bottom' : undefined"
+        class="pt-1"
       >
         <v-list>
           <v-list-item>
-            <v-btn class="w-100" @click="settings.themeLight = !settings.themeLight">
+            <v-btn class="w-100"  
+              @click="startMeteo" 
+              :active="showMeteo"
+              style="justify-content: start;"
+            >
+              {{ _t('Meteostation') }}
+            </v-btn>
+          </v-list-item>
+          <v-list-item>
+            <v-btn class="w-100" 
+              @click="settings.themeLight = !settings.themeLight"
+              style="justify-content: start;"
+            >
              {{ _t(settings.themeLight ? 'Dark theme' : 'Light theme')}}
+            </v-btn>
+          </v-list-item>
+          <v-list-item>
+            <v-btn class="w-100" 
+              @click="changeLanguage"
+              style="justify-content: start;"
+            >
+             {{ settings.language === 'ru-RU' ? 'English' : 'Русский' }}
             </v-btn>
           </v-list-item>
           <v-divider></v-divider>
           <v-list-item>
-            <v-btn class="w-100" @click="switchOff">
+            <v-btn class="w-100" @click="switchOff" style="justify-content: start;">
              {{ _t('Exit')}}
             </v-btn>
           </v-list-item>
+          <v-list-item>
+            <v-img :src="news_image" style="width:320px;margin-top:20px;">
+            </v-img>
+          </v-list-item>
         </v-list>
       </v-navigation-drawer>
-  <v-card
-    class="mx-auto text-center mt-16"
-    :subtitle="_t('Updated at') + ' : ' + updated_at"
-    v-if="showMeteo"
-    style="width:-webkit-fill-available;"
-  >
-    <template v-slot:title>
-      <span class="font-weight-black">{{ _t('Our meteostation') }}</span>
-    </template>
-    <v-card-text class="bg-surface-light pr-1 pl-1">
-    <div class="weather">
-      <div v-if="true"> 
-        <div class="d-flex flex-wrap" v-if="!chartMode">
-          <div class="border-md flex-grow-1">
-            <div class="d-flex flex-grow-1 flex-nowrap justify-space-between pa-1">
-              <div class="temp-box">
-                <div class="link-icon-left chart-link" 
-                  @click="showChart('temperature')" 
-                  :title="_t('Show chart')"
-                >
-                </div>
-                <div class=" font-weight-medium">
-                  {{ _t('Temperature') }}
-                </div>
-                <div class="wx-parameter">
-                  {{ temperature_out }} 
-                  <span class="text-unit">
-                    {{ temperature_unit }}
-                  </span>
-                </div>
-                <div class="">
-                  {{ _t('Feels like') }}
-                  <span class="text-green">
-                    {{ feels_like }} {{ feels_like_unit }}
-                  </span>
-                </div>
-              </div>
-              <div class="temp-box">
-                <div class="link-icon-left chart-link" 
-                  @click="showChart('humidity')" 
-                  :title="_t('Show chart')"
-                >
-                </div>
-                <div class=" font-weight-medium">
-                  {{ _t('Humidity') }}
-                </div>
-                <div class="wx-parameter">
-                  {{ humidity }} 
-                  <span class="text-unit">
-                    {{ humidity_unit }}
-                  </span>
-                </div>
-                <div class="">
-                  {{ _t('Dew point') }}
-                  <span class="text-green">
-                    {{ dew_point }} {{ dew_point_unit }}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="border-md flex-grow-1">
-            <div class="link-icon-left chart-link pt-l-4" 
-              @click="showChart('pressure')" 
-              :title="_t('Show chart')"
-            >
-            </div>
-            <div class=" font-weight-medium">
-              {{ _t('Pressure') }} 
-            </div>
-            <div class="d-flex flex-grow-1 flex-nowrap justify-space-between pa-1">
-              <div class="temp-box">
-                <div class="">
-                  {{ _t('Absolute') }}
-                </div>
-                <div class="wx-parameter">
-                  {{ pressure_abs }}
-                  <span class="text-unit">
-                    {{ pressure_unit }}
-                  </span>
+      <v-card
+        class="mx-auto text-center mt-12"
+        :subtitle="_t('Updated at') + ' : ' + updated_at"
+        style="width:-webkit-fill-available;" 
+        v-if="showMeteo"
+        :color="settings.themeLight ? '#e9eee6' : '#2c2e2b'"
+      >
+        <template v-slot:title>
+          <span class="font-weight-black">{{ _t('Our meteostation') }}</span>
+        </template>
+        <v-card-text class="bg-surface-light pa-1">
+        <div class="weather">
+          <div v-if="true"> 
+            <div class="d-flex flex-wrap" v-if="!chartMode">
+              <div class="border-md flex-grow-1">
+                <div class="d-flex flex-grow-1 flex-nowrap justify-space-between pa-1">
+                  <div class="temp-box">
+                    <div class="link-icon-left chart-link" 
+                      @click="showChart('temperature')" 
+                      :title="_t('Show chart')"
+                    >
+                    </div>
+                    <div class=" font-weight-medium">
+                      {{ _t('Temperature') }}
+                    </div>
+                    <div class="wx-parameter">
+                      {{ temperature_out }} 
+                      <span class="text-unit">
+                        {{ temperature_unit }}
+                      </span>
+                    </div>
+                    <div class="">
+                      {{ _t('Feels like') }}
+                      <span class="text-green">
+                        {{ feels_like }} {{ feels_like_unit }}
+                      </span>
+                    </div>
+                  </div>
+                  <div class="temp-box">
+                    <div class="link-icon-left chart-link" 
+                      @click="showChart('humidity')" 
+                      :title="_t('Show chart')"
+                    >
+                    </div>
+                    <div class=" font-weight-medium">
+                      {{ _t('Humidity') }}
+                    </div>
+                    <div class="wx-parameter">
+                      {{ humidity }} 
+                      <span class="text-unit">
+                        {{ humidity_unit }}
+                      </span>
+                    </div>
+                    <div class="">
+                      {{ _t('Dew point') }}
+                      <span class="text-green">
+                        {{ dew_point }} {{ dew_point_unit }}
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div class="temp-box">
-                <div class="">
-                  {{ _t('Relative') }}
-                </div>
-                <div class="wx-parameter">
-                  {{ pressure_rel }}
-                  <span class="text-unit">
-                    {{ pressure_unit }}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="border-md flex-grow-1">
+              <div class="border-md flex-grow-1">
                 <div class="link-icon-left chart-link pt-l-4" 
-                  @click="showChart('solar')" 
+                  @click="showChart('pressure')" 
                   :title="_t('Show chart')"
                 >
                 </div>
-            <div class=" font-weight-medium">
-              {{ _t('Solar and UVI') }}
+                <div class=" font-weight-medium">
+                  {{ _t('Pressure') }} 
+                </div>
+                <div class="d-flex flex-grow-1 flex-nowrap justify-space-between pa-1">
+                  <div class="temp-box">
+                    <div class="">
+                      {{ _t('Absolute') }}
+                    </div>
+                    <div class="wx-parameter">
+                      {{ pressure_abs }}
+                      <span class="text-unit">
+                        {{ pressure_unit }}
+                      </span>
+                    </div>
+                  </div>
+                  <div class="temp-box">
+                    <div class="">
+                      {{ _t('Relative') }}
+                    </div>
+                    <div class="wx-parameter">
+                      {{ pressure_rel }}
+                      <span class="text-unit">
+                        {{ pressure_unit }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="border-md flex-grow-1">
+                    <div class="link-icon-left chart-link pt-l-4" 
+                      @click="showChart('solar')" 
+                      :title="_t('Show chart')"
+                    >
+                    </div>
+                <div class=" font-weight-medium">
+                  {{ _t('Solar and UVI') }}
+                </div>
+                <div class="d-flex flex-grow-1 flex-nowrap justify-space-between pa-1">
+                  <div class="temp-box">
+                    <div class="">
+                      {{ _t('Illumination') }}
+                    </div>
+                    <div class="wx-parameter">
+                      {{ solar_rounded.value }}
+                      <span class="text-unit">
+                        {{ solar_rounded.unit }}
+                      </span>
+                    </div>
+                  </div>
+                  <div class="temp-box">
+                    <div class="">
+                      {{ _t('UVI') }}
+                    </div>
+                    <div class="wx-parameter">
+                      {{ uvi }}
+                      <span class="text-unit">
+                        {{ uvi_unit }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="border-md flex-grow-1">
+                  <div class="link-icon-left chart-link pt-l-4" 
+                    @click="showChart('wind')" 
+                    :title="_t('Show chart')"
+                  >
+                  </div>
+                <div class=" font-weight-medium">
+                  {{ _t('Wind') }}
+                </div>
+                <div class="d-flex flex-grow-1 flex-nowrap justify-space-between pa-1">
+                  <div class="temp-box">
+                    <div class="">
+                      {{ _t('Speed') }}
+                    </div>
+                    <div class="wx-parameter">
+                      {{ wind_speed }}
+                      <span class="text-unit">
+                        {{ wind_speed_unit }}
+                      </span>
+                    </div>
+                  </div>
+                  <div class="temp-box height130" v-if="!!wind_arrow_style">
+                    <div class="wind-arrow" :style="wind_arrow_style"></div>
+                    <div class="wx-parameter" style="position:relative;top:-100px;">
+                      {{ wind_direction }}
+                      <span class="text-unit">
+                        {{ wind_direction_unit }}
+                      </span>
+                      <p class="wind-rumb">{{ wind_rumb }}</p>
+                    </div>
+                  </div>
+                  <div class="temp-box">
+                    <div class="">
+                      {{ _t('Gust') }}
+                    </div>
+                    <div class="wx-parameter">
+                      {{ wind_gust }}
+                      <span class="text-unit">
+                        {{ wind_speed_unit }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="border-md flex-grow-1">
+                <div class="link-icon-left chart-link pt-l-4" 
+                  @click="showChart('rainfall')" 
+                  :title="_t('Show chart')"
+                >
+                </div>
+                <div class=" font-weight-medium">
+                  {{ _t('Rain') }}
+                </div>
+                <div class="d-flex flex-grow-1 flex-nowrap justify-space-between pa-1">
+                  <div class="temp-box">
+                    <div class="">
+                      {{ _t('Per hour') }}
+                    </div>
+                    <div class="wx-parameter">
+                      {{ rain_hour }} 
+                      <span class="text-unit">
+                        {{ rain_unit }}
+                      </span>
+                    </div>
+                    <div class="">
+                      {{ _t('Per day') }}
+                    </div>
+                    <div class="wx-parameter">
+                      {{ rain_day }} 
+                      <span class="text-unit">
+                        {{ rain_unit }}
+                      </span>
+                    </div>
+                  </div>
+                  <div class="temp-box align-content-center">
+                    <div class="d-flex justify-space-around" style="height:2em;">
+                      {{ _t('Weekly') }} <span class="text-green">
+                        {{ rain_week }} {{ rain_unit }}
+                      </span>
+                    </div>
+                    <div class="d-flex justify-space-around" style="height:2em;">
+                      {{ _t('Monthly') }} <span class="text-green">
+                        {{ rain_month }} {{ rain_unit }}
+                      </span>
+                    </div>
+                    <div class="d-flex justify-space-around" style="height:2em;">
+                      {{ _t('Yearly') }} <span class="text-green">
+                        {{ rain_year }} {{ rain_unit }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div class="d-flex flex-grow-1 flex-nowrap justify-space-between pa-1">
-              <div class="temp-box">
-                <div class="">
-                  {{ _t('Illumination') }}
-                </div>
-                <div class="wx-parameter">
-                  {{ solar_rounded.value }}
-                  <span class="text-unit">
-                    {{ solar_rounded.unit }}
-                  </span>
-                </div>
-              </div>
-              <div class="temp-box">
-                <div class="">
-                  {{ _t('UVI') }}
-                </div>
-                <div class="wx-parameter">
-                  {{ uvi }}
-                  <span class="text-unit">
-                    {{ uvi_unit }}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="border-md flex-grow-1">
-              <div class="link-icon-left chart-link pt-l-4" 
-                @click="showChart('wind')" 
-                :title="_t('Show chart')"
-              >
-              </div>
-            <div class=" font-weight-medium">
-              {{ _t('Wind') }}
-            </div>
-            <div class="d-flex flex-grow-1 flex-nowrap justify-space-between pa-1">
-              <div class="temp-box">
-                <div class="">
-                  {{ _t('Speed') }}
-                </div>
-                <div class="wx-parameter">
-                  {{ wind_speed }}
-                  <span class="text-unit">
-                    {{ wind_speed_unit }}
-                  </span>
-                </div>
-              </div>
-              <div class="temp-box height130" v-if="!!wind_arrow_style">
-                <div class="wind-arrow" :style="wind_arrow_style"></div>
-                <div class="wx-parameter" style="position:relative;top:-100px;">
-                  {{ wind_direction }}
-                  <span class="text-unit">
-                    {{ wind_direction_unit }}
-                  </span>
-                  <p class="wind-rumb">{{ wind_rumb }}</p>
-                </div>
-              </div>
-              <div class="temp-box">
-                <div class="">
-                  {{ _t('Gust') }}
-                </div>
-                <div class="wx-parameter">
-                  {{ wind_gust }}
-                  <span class="text-unit">
-                    {{ wind_speed_unit }}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="border-md flex-grow-1">
-            <div class="link-icon-left chart-link pt-l-4" 
-              @click="showChart('rainfall')" 
-              :title="_t('Show chart')"
-            >
-            </div>
-            <div class=" font-weight-medium">
-              {{ _t('Rain') }}
-            </div>
-            <div class="d-flex flex-grow-1 flex-nowrap justify-space-between pa-1">
-              <div class="temp-box">
-                <div class="">
-                  {{ _t('Per hour') }}
-                </div>
-                <div class="wx-parameter">
-                  {{ rain_hour }} 
-                  <span class="text-unit">
-                    {{ rain_unit }}
-                  </span>
-                </div>
-                <div class="">
-                  {{ _t('Per day') }}
-                </div>
-                <div class="wx-parameter">
-                  {{ rain_day }} 
-                  <span class="text-unit">
-                    {{ rain_unit }}
-                  </span>
-                </div>
-              </div>
-              <div class="temp-box align-content-center">
-                <div class="d-flex justify-space-around" style="height:2em;">
-                  {{ _t('Weekly') }} <span class="text-green">
-                    {{ rain_week }} {{ rain_unit }}
-                  </span>
-                </div>
-                <div class="d-flex justify-space-around" style="height:2em;">
-                  {{ _t('Monthly') }} <span class="text-green">
-                    {{ rain_month }} {{ rain_unit }}
-                  </span>
-                </div>
-                <div class="d-flex justify-space-around" style="height:2em;">
-                  {{ _t('Yearly') }} <span class="text-green">
-                    {{ rain_year }} {{ rain_unit }}
-                  </span>
-                </div>
+            <div class="d-flex flex-wrap" v-if="chartMode">
+              <div class="d-flex flex-grow-1 flex-nowrap justify-space-between pa-1">
+                <v-btn density="default" @click="showChart(null)" :title="_t('Close')">&#65794;</v-btn>
+                <LineChart :history="dataset" />
               </div>
             </div>
           </div>
         </div>
-        <div class="d-flex flex-wrap" v-if="chartMode">
-          <div class="d-flex flex-grow-1 flex-nowrap justify-space-between pa-1">
-            <v-btn density="default" @click="showChart(null)" :title="_t('Close')">&#65794;</v-btn>
-            <LineChart :history="dataset" />
-          </div>
-        </div>
-      </div>
-    </div>
-    </v-card-text>
-  </v-card>
-</v-theme-provider>
-</v-layout>
+        </v-card-text>
+      </v-card>
+    </v-theme-provider>
+  </v-layout>
 </template>
 
 <script lang="ts">
   import axios from "axios";
-  import REQUEST_PARAMS from "./request_params.ts";
+  import CONFIG from "./config.ts";
   import TRANSLATIONS from "./translations.ts";
   import moment from "moment/dist/moment";
   import LineChart from "./components/LineChart.vue";
@@ -279,7 +306,7 @@
 
 
   const HISTORY_UPDATES_INTERVAL = 7200000;  //TODO 2 hours
-  const WEATHER_UPDATES_INTERVAL = 300000;  //TODO 5 minutes
+  const WEATHER_UPDATES_INTERVAL = CONFIG.weatherUpdatesInterval;  //TODO 5 minutes
 
   const  onDeviceReady = () => {}
 
@@ -292,7 +319,6 @@
       return {
         wxData: null,
         historyData: null,
-        language: 'en-US',
         timer: '',
         updated_at: "",
         showMeteo: false,
@@ -300,18 +326,19 @@
         chartMode: false,
         dataset: null,
         settings: {
-          themeLight: false
+          themeLight: false,
+          language: 'en-US'
         },
-        drawer: false
+        drawer: false,
+        news_ticker: '',
+        news_image: null
       }
     },
     async mounted() {
+      this.updateSettings();
       this.setLanguage();
-      let savedSettings = JSON.parse(STORAGE.getItem("localSettings"));
-      if (!isEmpty(savedSettings)) {
-        this.settings = savedSettings;
-      }
       this.startMeteo();
+      this.getNews();
     },
     beforeDestroy() {
       clearInterval(this.timer);
@@ -319,7 +346,7 @@
     methods: {
       async getWxData() {
           try {
-            const response = await axios(REQUEST_PARAMS.url);
+            const response = await axios(CONFIG.weatherUrl);
             this.wxData = response.data.all.data;
             this.updated_at = new Date().toLocaleTimeString('ru-RU', {
               hour: '2-digit',
@@ -331,6 +358,22 @@
             console.error(this._t('Error fetching weather data:'), error);
           }
       },
+      async getNews() {
+        try {
+          const response = await axios.post(CONFIG.newsUrl);
+          let stickers, firstSticker, firstAttachment;
+          stickers = response?.data?.active_stickers;
+          firstSticker = stickers[0];
+          this.news_ticker = firstSticker?.message;
+          let attachments = firstSticker.attachments;
+          this.news_image = attachments[0]?.media?.path;
+          if (this.news_image.length) {
+            this.news_image = this.news_image.replace('public', CONFIG.imgUrlReplacementString);
+          }
+        } catch (error) {
+          console.error(this._t('Error fetching data:'), error);
+        }
+      },
       updateHistory(payload) {
         this.historyData = JSON.parse(STORAGE.getItem('history'));
         if (!this.history_is_ready) {
@@ -340,33 +383,39 @@
         }
       },
       setLanguage() {
-        this.language = window.navigator.language;
-        if (typeof document === 'object') {
-          let tagHtml = document.getElementsByTagName('html');
-          if(typeof tagHtml === 'object' && typeof tagHtml[0] !== 'undefined') {
-            if(typeof tagHtml[0] === 'object') {
-              if(tagHtml[0].getAttribute('lang') !== null) {
-                this.language = tagHtml[0].getAttribute('lang');
-              }
-            }
-          }
-        } 
-        if(this.language === 'ru') {
-          this.language = 'ru-RU'; 
-        }
-        if(this.language === 'en') {
-          this.language = 'en-US'; 
+        if (this.settings.language.length > 1) {
+          document.documentElement.setAttribute('lang', this.settings.language.slice(0, 2));
         }
       },
+      changeLanguage() {
+        let current = this.settings.language.slice(0, 2).toLowerCase();
+        if (current === 'en') {
+          this.settings.language = 'ru-RU';
+        }
+        if (current === 'ru') {
+          this.settings.language = 'en-US';
+        }
+        this.saveSettings();
+        this.setLanguage();
+      },
+      updateSettings() {
+        const savedSettings = JSON.parse(STORAGE.getItem("localSettings"));
+        Object.keys(this.settings).map((key, index) => {
+          if (typeof savedSettings[key] !== 'undefined') {
+            this.settings[key] = savedSettings[key];
+          }
+        });
+      },
       _t(txt) {
-        let current = TRANSLATIONS[this.language];
+        let current = TRANSLATIONS[this.settings.language];
         if (typeof current !== 'undefined') {
           return current[txt] ?? txt;
         }
         return txt;
       },
       startMeteo() {
-        if (this.showMeteo) {
+        this.showMeteo = !this.showMeteo;
+        if (!this.showMeteo) {
           clearInterval(this.timer);
         } else {
           this.getWxData();
@@ -374,7 +423,6 @@
           this.drawer = false;
         }
         this.showChart(null);
-        this.showMeteo = !this.showMeteo;  
       },
       showChart(wx_param) {
         if (wx_param === null) {
@@ -715,6 +763,34 @@
               pointRadius: 3
             }
           ]
+        }
+      },
+      drawerStyle() {
+        if(this.drawer) {
+          return this.$vuetify.display.mobile ? 
+            'width:100%;transform:translateX(-100%)' : 
+            'width:360px;transform:translateX(-360px)';
+        } else {
+          return this.$vuetify.display.mobile ? 
+            'width:100%;transform:translateX(0%)' : 
+            'width:360px;transform:translateX(-1px)';
+        }
+      }
+    },
+    watch: {
+      "showMeteo"() {
+        if(this.drawer) {
+          this.drawer = false;
+        }
+      },
+      "settings.themeLight"() {
+        if(this.drawer) {
+          this.drawer = false;
+        }
+      },
+      "settings.language"() {
+        if(this.drawer) {
+          this.drawer = false;
         }
       }
     }
