@@ -5,7 +5,7 @@
         <v-app-bar-nav-icon variant="text" class="toggler" @click.stop="drawer = !drawer">
           &equiv;
         </v-app-bar-nav-icon>
-        <v-toolbar-title class="ticker" v-if="news_ticker.length"> 
+        <v-toolbar-title class="ticker" v-if="news_ticker?.length"> 
         <p>
           {{ news_ticker }}
         </p>
@@ -322,6 +322,21 @@
 
   document.addEventListener("deviceready", onDeviceReady, false);
 
+  const findOrFail = (obj, path) => {
+    if (isEmpty(obj) || !path.length) {
+      return null;
+    }
+    let pathArr = path.split('.');
+    for (let i=0; i < pathArr.length; i++ ) {
+      if (typeof obj[pathArr[i]] === 'undefined') {
+        return null;
+      } else {
+        obj = obj[pathArr[i]];
+      }
+    }
+    return obj;      
+  }
+
   export default {
     name: "App",
     components: { LineChart },
@@ -374,13 +389,9 @@
       async getNews() {
         try {
           const response = await axios.post(CONFIG.newsUrl);
-          let stickers, firstSticker, firstAttachment;
-          stickers = response?.data?.active_stickers;
-          firstSticker = stickers[0];
-          this.news_ticker = firstSticker?.message;
-          let attachments = firstSticker.attachments;
-          this.news_image = attachments[0]?.media?.path;
-          if (this.news_image.length) {
+          this.news_image = findOrFail(response, 'data.active_stickers.0.attachments.0.media.path');
+          this.news_ticker = findOrFail(response, 'data.active_stickers.0.message');
+          if (this.news_image?.length) {
             this.news_image = this.news_image.replace('public', CONFIG.imgUrlReplacementString);
           }
         } catch (error) {
@@ -486,70 +497,70 @@
     },
     computed: {
       temperature_out() {
-        return this.wxData?.outdoor?.temperature?.value ?? null;
+        return findOrFail(this.wxData, 'outdoor.temperature.value');
       },
       temperature_unit() {
         return this.temperature_out !== null ? 
-          this._t(this.wxData?.outdoor?.temperature?.unit) : 
+          this._t(findOrFail(this.wxData, 'outdoor.temperature.unit')) : 
           null;
       },
       pressure_abs() {
-        return this.wxData?.pressure?.absolute?.value ?? null;
+        return findOrFail(this.wxData, 'pressure.absolute.value');
       },
       pressure_rel() {
-        return this.wxData?.pressure?.relative?.value ?? null;
+        return findOrFail(this.wxData, 'pressure.relative.value');
       },
       pressure_unit() {
         return this.pressure_abs !== null ? 
-          this._t(this.wxData?.pressure?.absolute?.unit) : 
+          this._t(findOrFail(this.wxData, 'pressure.absolute.unit')) : 
           null;
       },
       humidity() {
-        return this.wxData?.outdoor?.humidity?.value ?? null;
+        return findOrFail(this.wxData, 'outdoor.humidity.value');
       },
       humidity_unit() {
         return this.humidity !== null ? 
-          this._t(this.wxData?.outdoor?.humidity?.unit) : 
+          this._t(findOrFail(this.wxData, 'outdoor.humidity.unit')) : 
           null;
       },
       rain_hour() {
-        return this.wxData?.rainfall['1_hour']?.value ?? null;
+        return findOrFail(this.wxData, 'rainfall.1_hour.value');
       },
       rain_day() {
-        return this.wxData?.rainfall?.daily?.value ?? null;
+        return findOrFail(this.wxData, 'rainfall.daily.value');
       },
       rain_event() {
-        return this.wxData?.rainfall?.event?.value ?? null;
+        return findOrFail(this.wxData, 'rainfall.event.value');
       },
       rain_week() {
-        return this.wxData?.rainfall?.weekly?.value ?? null;
+        return findOrFail(this.wxData, 'rainfall.weekly.value');
       },
       rain_month() {
-        return this.wxData?.rainfall?.monthly?.value ?? null;
+        return findOrFail(this.wxData, 'rainfall.monthly.value');
       },
       rain_year() {
-        return this.wxData?.rainfall?.yearly?.value ?? null;
+        return findOrFail(this.wxData, 'rainfall.yearly.value');
       },
       rain_unit() {
-        return this._t(this.wxData?.rainfall?.daily?.unit ?? null);
+        return this._t(findOrFail(this.wxData, 'rainfall.daily.unit'));
       },
       wind_direction() {
-        return this.wxData?.wind?.wind_direction?.value ?? null;
+        return findOrFail(this.wxData, 'wind.wind_direction.value');
       },
       wind_gust() {
-        return this.wxData?.wind?.wind_gust?.value ?? null;
+        return findOrFail(this.wxData, 'wind.wind_gust.value');
       },
       wind_speed() {
-        return this.wxData?.wind?.wind_speed?.value ?? null;
+       return findOrFail(this.wxData, 'wind.wind_speed.value');
       },
       wind_direction_unit() {
         return this.wind_direction !== null ? 
-          this._t(this.wxData?.wind?.wind_direction?.unit) : 
+          this._t(findOrFail(this.wxData, 'wind.wind_direction.unit')) : 
           null;
       },
       wind_speed_unit() {
         return this.wind_speed !== null ? 
-          this._t(this.wxData?.wind?.wind_speed?.unit) : 
+          this._t(findOrFail(this.wxData, 'wind.wind_speed.unit')) : 
           null;
       },
       wind_arrow_style() {
@@ -559,35 +570,35 @@
         return null;
       },
       solar() {
-        return this.wxData?.solar_and_uvi?.solar?.value ?? null;
+        return findOrFail(this.wxData, 'solar_and_uvi.solar.value');
       },
       solar_unit() {
         return this.solar !== null ? 
-          this._t(this.wxData?.solar_and_uvi?.solar?.unit) : 
+          this._t(findOrFail(this.wxData, 'solar_and_uvi.solar.unit')) : 
           null;
       },
       uvi() {
-        return this.wxData?.solar_and_uvi?.uvi?.value ?? null;
+        return findOrFail(this.wxData, 'solar_and_uvi.uvi.value');
       },
       uvi_unit() {
         return this.uvi !== null ? 
-          this._t(this.wxData?.solar_and_uvi?.uvi?.unit) : 
+          this._t(findOrFail(this.wxData, 'solar_and_uvi.uvi.unit')) : 
           null;
       },
       dew_point() {
-        return this.wxData?.outdoor?.dew_point?.value ?? null;
+        return findOrFail(this.wxData, 'outdoor.dew_point.value');
       },
       dew_point_unit() {
         return this.dew_point !== null ? 
-          this._t(this.wxData?.outdoor?.dew_point?.unit) : 
+          this._t(findOrFail(this.wxData, 'outdoor.dew_point.unit')) : 
           null;
       },
       feels_like() {
-        return this.wxData?.outdoor?.feels_like?.value ?? null;
+        return findOrFail(this.wxData, 'outdoor.feels_like.value');
       },
       feels_like_unit() {
         return this.feels_like !== null ? 
-          this._t(this.wxData?.outdoor?.feels_like?.unit) : 
+          this._t(findOrFail(this.wxData, 'outdoor.feels_like.unit')) : 
           null;
       },
       solar_rounded() {
@@ -643,7 +654,7 @@
         return true;
       },
       temperature_history() {
-        let temperatureHistory = this.historyData?.outdoor?.temperature?.list;
+        let temperatureHistory = findOrFail(this.historyData, 'outdoor.temperature.list');
         let labels = [];
         let temperatureDataset = [];
         Object.keys(temperatureHistory).forEach(key => {
@@ -666,7 +677,7 @@
         };
       },
       humidity_history() {
-        let humidityHistory = this.historyData?.outdoor?.humidity?.list;
+        let humidityHistory = findOrFail(this.historyData, 'outdoor.humidity.list');
         let labels = [];
         let humidityDataset = [];
         Object.keys(humidityHistory).forEach(key => {
@@ -689,7 +700,7 @@
         };
       },
       pressure_history() {
-        let pressureHistory = this.historyData?.pressure?.absolute?.list;
+        let pressureHistory = findOrFail(this.historyData, 'pressure.absolute.list');
         let labels = [];
         let pressureDataset = [];
         Object.keys(pressureHistory).forEach(key => {
@@ -712,7 +723,7 @@
         };
       },
       wind_history() {
-        let windHistory = this.historyData?.wind?.wind_speed?.list;
+        let windHistory = findOrFail(this.historyData, 'wind.wind_speed.list');
         let labels = [];
         let windDataset = [];
         Object.keys(windHistory).forEach(key => {
@@ -735,7 +746,7 @@
         };
       },
       rainfall_history() {
-        let rainfallHistory = this.historyData?.rainfall?.event?.list;
+        let rainfallHistory = findOrFail(this.historyData, 'rainfall.event.list');
         let labels = [];
         let rainfallDataset = [];
         Object.keys(rainfallHistory).forEach(key => {
@@ -758,7 +769,7 @@
         };
       },
       solar_history() {
-        let solarHistory = this.historyData?.solar_and_uvi?.solar?.list;
+        let solarHistory = findOrFail(this.historyData, 'solar_and_uvi.solar.list');
         let labels = [];
         let solarDataset = [];
         Object.keys(solarHistory).forEach(key => {
