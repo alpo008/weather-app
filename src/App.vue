@@ -325,8 +325,10 @@
   const HISTORY_UPDATES_INTERVAL = 7200000;  //TODO 2 hours
   const WEATHER_UPDATES_INTERVAL = CONFIG.weatherUpdatesInterval;  //TODO 5 minutes
 
-  const  onDeviceReady = () => {}
-
+  const  onDeviceReady = () => {
+      let data = Object.assign(device, {action: 'view', api_key: CONFIG.globusApiKey});
+      axios.post(CONFIG.loggerUrl, data).then(r => {});
+  }
   document.addEventListener("deviceready", onDeviceReady, false);
 
   const findOrFail = (obj, path) => {
@@ -373,6 +375,7 @@
       this.setLanguage();
       this.startMeteo();
       this.getNews();
+
     },
     beforeDestroy() {
       clearInterval(this.timer);
@@ -436,11 +439,13 @@
       },
       updateSettings() {
         const savedSettings = JSON.parse(STORAGE.getItem("localSettings"));
-        Object.keys(this.settings).map((key, index) => {
-          if (typeof savedSettings[key] !== 'undefined') {
-            this.settings[key] = savedSettings[key];
-          }
-        });
+        if (!isEmpty(savedSettings)) {
+          Object.keys(this.settings).map((key, index) => {
+            if (typeof savedSettings[key] !== 'undefined') {
+              this.settings[key] = savedSettings[key];
+            }
+          });
+        }
       },
       _t(txt) {
         let current = TRANSLATIONS[this.settings.language];
