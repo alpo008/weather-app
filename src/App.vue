@@ -375,7 +375,6 @@
       this.setLanguage();
       this.startMeteo();
       this.getNews();
-
     },
     beforeDestroy() {
       clearInterval(this.timer);
@@ -438,14 +437,16 @@
         this.saveSettings();
       },
       updateSettings() {
-        const savedSettings = JSON.parse(STORAGE.getItem("localSettings"));
-        if (!isEmpty(savedSettings)) {
-          Object.keys(this.settings).map((key, index) => {
-            if (typeof savedSettings[key] !== 'undefined') {
-              this.settings[key] = savedSettings[key];
-            }
-          });
+        let savedSettings = JSON.parse(STORAGE.getItem("localSettings"));
+        if (isEmpty(savedSettings)) {
+          this.saveSettings();
+          savedSettings = JSON.parse(STORAGE.getItem("localSettings"));
         }
+        Object.keys(this.settings).map((key, index) => {
+          if (typeof savedSettings[key] !== 'undefined') {
+            this.settings[key] = savedSettings[key];
+          }
+        });
       },
       _t(txt) {
         let current = TRANSLATIONS[this.settings.language];
