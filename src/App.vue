@@ -1,5 +1,5 @@
 <template>
-  <v-layout>
+  <v-layout class="flex-column">
     <v-theme-provider :theme="settings.themeLight ? 'light' : 'dark'">
       <v-app-bar density="compact">
         <v-app-bar-nav-icon variant="text" class="toggler" @click.stop="drawer = !drawer">
@@ -16,15 +16,15 @@
         temporary
         :location="$vuetify.display.mobile ? 'bottom' : undefined"
         class="pt-1"
+        width="310"
       >
         <v-list>
           <v-list-item>
             <v-btn class="w-100"  
               @click="startMeteo" 
-              :active="showMeteo"
               style="justify-content: start;"
             >
-              {{ _t('Meteostation') }}
+              {{ showMeteo ? _t('Web camera') : _t('Meteostation') }}
             </v-btn>
           </v-list-item>
           <v-list-item>
@@ -48,10 +48,6 @@
             <v-btn class="w-100" @click="switchOff" style="justify-content: start;">
              {{ _t('Exit')}}
             </v-btn>
-          </v-list-item>
-          <v-list-item>
-            <v-img :src="news_image" style="width:220px;margin-top:5px;">
-            </v-img>
           </v-list-item>
         </v-list>
       </v-navigation-drawer>
@@ -281,13 +277,24 @@
             </div>
             <div class="d-flex flex-wrap" v-if="chartMode">
               <div class="d-flex flex-grow-1 flex-nowrap justify-space-between pa-1">
-                <v-btn density="default" @click="showChart(null)" :title="_t('Close')">&#65794;</v-btn>
+                <v-btn 
+                  variant="plain"
+                  size="large"
+                  @click="showChart(null)" 
+                  :title="_t('Close')" 
+                  position="absolute" text="&#65794;"
+                  style="font-size:2em;right:-24px;top:64px;"
+                  >
+                </v-btn>
                 <LineChart :history="dataset" />
               </div>
             </div>
           </div>
         </div>
         </v-card-text>
+      </v-card>
+      <v-card v-if="!showMeteo" class="text-center mt-14">
+        <iframe :src="videoSrc" width="95%" height="600" frameBorder="0" seamless="seamless" allowfullscreen>Ваш браузер не поддерживает фреймы!</iframe>
       </v-card>
       <v-overlay
         :model-value="loader"
@@ -357,7 +364,8 @@
         drawer: false,
         news_ticker: '',
         news_image: null,
-        loader: false
+        loader: false,
+        videoSrc: CONFIG.liveCameraSrc
       }
     },
     async mounted() {

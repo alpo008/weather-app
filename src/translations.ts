@@ -34,6 +34,7 @@ const translations = {
         "Updated at" : "Обновлено в",
         "UVI" : "УФ индекс",
         "Weekly" : "За неделю",
+        "Web camera" : "Веб камера",
         "Wind" : "Ветер",
         "Yearly" : "За год",
         "%": "%",
