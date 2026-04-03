@@ -52,7 +52,7 @@
         </v-list>
       </v-navigation-drawer>
       <v-card
-        class="mx-auto text-center mt-12"
+        class="mx-auto text-center mt-12 rounded-0"
         :subtitle="_t('Updated at') + ' : ' + updated_at"
         style="width:-webkit-fill-available;" 
         v-if="showMeteo"
@@ -293,8 +293,15 @@
         </div>
         </v-card-text>
       </v-card>
-      <v-card v-if="!showMeteo" class="text-center mt-14">
-        <iframe :src="videoSrc" width="95%" height="600" frameBorder="0" seamless="seamless" allowfullscreen>Ваш браузер не поддерживает фреймы!</iframe>
+      <v-card v-if="!showMeteo" class="text-center mt-12">
+        <iframe :src="videoSrc" 
+          width="95%" height="600" 
+          frameBorder="0" 
+          seamless="seamless" 
+          allowfullscreen
+        >
+          {{ _t('Your browser does not support frames') }} !
+        </iframe>
       </v-card>
       <v-overlay
         :model-value="loader"
@@ -356,7 +363,6 @@
         timer: '',
         updated_at: "",
         showMeteo: false,
-        sidebar: false,
         chartMode: false,
         dataset: null,
         settings: {

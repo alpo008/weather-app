@@ -37,6 +37,7 @@ const translations = {
         "Web camera" : "Веб камера",
         "Wind" : "Ветер",
         "Yearly" : "За год",
+        "Your browser does not support frames" : "Ваш браузер не поддерживает фреймы",
         "%": "%",
         "℃": "℃"
     }
