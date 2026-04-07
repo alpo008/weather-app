@@ -73,7 +73,7 @@
                       :title="_t('Show chart')"
                     >
                     </div>
-                    <div class=" font-weight-medium">
+                    <div class="font-weight-medium">
                       {{ _t('Temperature') }}
                     </div>
                     <div class="wx-parameter">
@@ -82,7 +82,7 @@
                         {{ temperature_unit }}
                       </span>
                     </div>
-                    <div class="">
+                    <div>
                       {{ _t('Feels like') }}
                       <span class="text-green">
                         {{ feels_like }} {{ feels_like_unit }}
@@ -95,7 +95,7 @@
                       :title="_t('Show chart')"
                     >
                     </div>
-                    <div class=" font-weight-medium">
+                    <div class="font-weight-medium">
                       {{ _t('Humidity') }}
                     </div>
                     <div class="wx-parameter">
@@ -104,7 +104,7 @@
                         {{ humidity_unit }}
                       </span>
                     </div>
-                    <div class="">
+                    <div>
                       {{ _t('Dew point') }}
                       <span class="text-green">
                         {{ dew_point }} {{ dew_point_unit }}
@@ -119,12 +119,12 @@
                   :title="_t('Show chart')"
                 >
                 </div>
-                <div class=" font-weight-medium">
+                <div class="font-weight-medium">
                   {{ _t('Pressure') }} 
                 </div>
                 <div class="d-flex flex-grow-1 flex-nowrap justify-space-between pa-1">
                   <div class="temp-box">
-                    <div class="">
+                    <div>
                       {{ _t('Absolute') }}
                     </div>
                     <div class="wx-parameter">
@@ -135,7 +135,7 @@
                     </div>
                   </div>
                   <div class="temp-box">
-                    <div class="">
+                    <div>
                       {{ _t('Relative') }}
                     </div>
                     <div class="wx-parameter">
@@ -153,12 +153,12 @@
                       :title="_t('Show chart')"
                     >
                     </div>
-                <div class=" font-weight-medium">
+                <div class="font-weight-medium">
                   {{ _t('Solar and UVI') }}
                 </div>
                 <div class="d-flex flex-grow-1 flex-nowrap justify-space-between pa-1">
                   <div class="temp-box">
-                    <div class="">
+                    <div>
                       {{ _t('Illumination') }}
                     </div>
                     <div class="wx-parameter">
@@ -169,7 +169,7 @@
                     </div>
                   </div>
                   <div class="temp-box">
-                    <div class="">
+                    <div>
                       {{ _t('UVI') }}
                     </div>
                     <div class="wx-parameter">
@@ -187,12 +187,12 @@
                     :title="_t('Show chart')"
                   >
                   </div>
-                <div class=" font-weight-medium">
+                <div class="font-weight-medium">
                   {{ _t('Wind') }}
                 </div>
                 <div class="d-flex flex-grow-1 flex-nowrap justify-space-between pa-1">
                   <div class="temp-box">
-                    <div class="">
+                    <div>
                       {{ _t('Speed') }}
                     </div>
                     <div class="wx-parameter">
@@ -219,7 +219,7 @@
                     </div>
                   </div>
                   <div class="temp-box wind-gust-large">
-                    <div class="">
+                    <div>
                       {{ _t('Gust') }}
                     </div>
                     <div class="wx-parameter">
@@ -237,12 +237,12 @@
                   :title="_t('Show chart')"
                 >
                 </div>
-                <div class=" font-weight-medium">
+                <div class="font-weight-medium">
                   {{ _t('Rain') }}
                 </div>
                 <div class="d-flex flex-grow-1 flex-nowrap justify-space-between pa-1">
                   <div class="temp-box">
-                    <div class="">
+                    <div>
                       {{ _t('Per hour') }}
                     </div>
                     <div class="wx-parameter">
@@ -251,7 +251,7 @@
                         {{ rain_unit }}
                       </span>
                     </div>
-                    <div class="">
+                    <div>
                       {{ _t('Per day') }}
                     </div>
                     <div class="wx-parameter">
