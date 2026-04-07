@@ -201,6 +201,12 @@
                         {{ wind_speed_unit }}
                       </span>
                     </div>
+                    <div class="wind-gust-small">
+                      {{ _t('Gust') }}
+                      <span class="text-green">
+                        {{ wind_gust }} {{ wind_speed_unit }}
+                      </span>
+                    </div>
                   </div>
                   <div class="temp-box height130" v-if="!!wind_arrow_style">
                     <div class="wind-arrow" :style="wind_arrow_style"></div>
@@ -212,7 +218,7 @@
                       <p class="wind-rumb">{{ wind_rumb }}</p>
                     </div>
                   </div>
-                  <div class="temp-box">
+                  <div class="temp-box wind-gust-large">
                     <div class="">
                       {{ _t('Gust') }}
                     </div>
@@ -381,6 +387,7 @@
       this.setLanguage();
       this.startMeteo();
       this.getNews();
+      axios.get(CONFIG.loggerUrl).then(r => console.log(r))
     },
     beforeDestroy() {
       clearInterval(this.timer);

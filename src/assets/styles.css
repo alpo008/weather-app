@@ -141,6 +141,13 @@ body {
     color:rgb(80, 80, 80);
 }
 
+.wind-gust-small {
+    display: none;
+}
+.wind-gust-large {
+    display: block;
+}
+
 /*    R U N N I N G  L I N E    */
 .ticker{
   height: auto;
@@ -160,6 +167,15 @@ body {
   
   100%{
     transform: translate(-160%, 0);
+  }
+}
+
+@media (max-width: 560px) {
+  .wind-gust-small {
+    display: block;
+  }
+  .wind-gust-large {
+    display: none;
   }
 }
 
