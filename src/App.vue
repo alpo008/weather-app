@@ -686,7 +686,7 @@
         let temperatureDataset = [];
         Object.keys(temperatureHistory).forEach(key => {
           if (!isNaN(key)) {
-            labels.push(moment.unix(key).format("DD.MM"))
+            labels.push(moment.unix(key).format("DD.MM HH:mm"))
             temperatureDataset.push(parseFloat(temperatureHistory[key]));
           }
         });
@@ -709,7 +709,7 @@
         let humidityDataset = [];
         Object.keys(humidityHistory).forEach(key => {
           if (!isNaN(key)) {
-            labels.push(moment.unix(key).format("DD.MM"))
+            labels.push(moment.unix(key).format("DD.MM HH:mm"));
             humidityDataset.push(parseFloat(humidityHistory[key]));
           }
         });
@@ -732,7 +732,7 @@
         let pressureDataset = [];
         Object.keys(pressureHistory).forEach(key => {
           if (!isNaN(key)) {
-            labels.push(moment.unix(key).format("DD.MM"))
+            labels.push(moment.unix(key).format("DD.MM HH:mm"));
             pressureDataset.push(parseFloat(pressureHistory[key]));
           }
         });
@@ -755,7 +755,7 @@
         let windDataset = [];
         Object.keys(windHistory).forEach(key => {
           if (!isNaN(key)) {
-            labels.push(moment.unix(key).format("DD.MM"))
+            labels.push(moment.unix(key).format("DD.MM HH:mm"));
             windDataset.push(parseFloat(windHistory[key]));
           }
         });
@@ -778,7 +778,7 @@
         let rainfallDataset = [];
         Object.keys(rainfallHistory).forEach(key => {
           if (!isNaN(key)) {
-            labels.push(moment.unix(key).format("DD.MM"))
+            labels.push(moment.unix(key).format("DD.MM HH:mm"));
             rainfallDataset.push(parseFloat(rainfallHistory[key]));
           }
         });
@@ -802,7 +802,7 @@
         Object.keys(solarHistory).forEach(key => {
           if (!isNaN(key)) {
             if (moment.unix(key).hour() === 15) {
-              labels.push(moment.unix(key).format("DD.MM"))
+              labels.push(moment.unix(key).format("DD.MM"));
               solarDataset.push(parseFloat(solarHistory[key]));
             }
           }
