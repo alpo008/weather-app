@@ -1,6 +1,8 @@
 const translations = {
     "ru-RU" : {
         "Absolute" : "Абсолютное",
+        "Application key" : "Ключ приложения",
+        "Application registration" : "Регистрация приложения",
         "Close" : "Закрыть",
         "Dark theme" : "Темная тема",
         "Dew point" : "Точка росы",
@@ -25,6 +27,7 @@ const translations = {
         "Per hour" : "За час",
         "Pressure" : "Давление",
         "Rain" : "Дождь",
+        "Register" : "Зарегистрировать",
         "Relative" : "Относительное",
         "Show chart" : "Инфографика",
         "Speed" : "Скорость",

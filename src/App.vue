@@ -1,7 +1,7 @@
 <template>
   <v-layout class="flex-column">
     <v-theme-provider :theme="settings.themeLight ? 'light' : 'dark'">
-      <v-app-bar density="compact">
+      <v-app-bar density="compact" v-if="authorized">
         <v-app-bar-nav-icon variant="text" class="toggler" @click.stop="drawer = !drawer">
           &equiv;
         </v-app-bar-nav-icon>
@@ -55,7 +55,7 @@
         class="mx-auto text-center mt-12 rounded-0"
         :subtitle="_t('Updated at') + ' : ' + updated_at"
         style="width:-webkit-fill-available;" 
-        v-if="showMeteo"
+        v-if="showMeteo && authorized"
         :color="settings.themeLight ? '#e9eee6' : '#2c2e2b'"
       >
         <template v-slot:title>
@@ -63,7 +63,7 @@
         </template>
         <v-card-text class="bg-surface-light pa-1">
         <div class="weather">
-          <div v-if="true"> 
+          <div> 
             <div class="d-flex flex-wrap" v-if="!chartMode">
               <div class="border-md flex-grow-1">
                 <div class="d-flex flex-grow-1 flex-nowrap justify-space-between pa-1">
@@ -281,7 +281,7 @@
                 </div>
               </div>
             </div>
-            <div class="d-flex flex-wrap" v-if="chartMode">
+            <div class="d-flex flex-wrap" v-if="chartMode && authorized">
               <div class="d-flex flex-grow-1 flex-nowrap justify-space-between pa-1">
                 <v-btn 
                   variant="plain"
@@ -299,7 +299,7 @@
         </div>
         </v-card-text>
       </v-card>
-      <v-card v-if="!showMeteo" class="text-center mt-12">
+      <v-card v-if="!showMeteo && authorized" class="text-center mt-12">
         <iframe :src="videoSrc" 
           width="95%" height="600" 
           frameBorder="0" 
@@ -308,6 +308,20 @@
         >
           {{ _t('Your browser does not support frames') }} !
         </iframe>
+      </v-card>
+
+      <v-card v-if="!authorized">
+        <v-form @submit.prevent="register" class="mt-14">
+          <p class="font-weight-black text-center">{{ _t('Application registration') }}</p>
+          <v-text-field 
+          :label="_t('Application key')"
+            type="text"
+            v-model="app_key"
+            :error-messages="errors.app_key"
+          >           
+          </v-text-field>
+          <v-btn class="mt-2" type="submit" block> {{ _t('Register') }}</v-btn>
+        </v-form>
       </v-card>
       <v-overlay
         :model-value="loader"
@@ -336,9 +350,10 @@
 
 
   const HISTORY_UPDATES_INTERVAL = 7200000;  //TODO 2 hours
-  const WEATHER_UPDATES_INTERVAL = CONFIG.weatherUpdatesInterval;  //TODO 5 minutes
+  const WEATHER_UPDATES_INTERVAL = CONFIG.weatherUpdatesInterval;
 
   const  onDeviceReady = () => {
+      const DEVICE = structuredClone(device);
       let data = Object.assign(device, {action: 'view', api_key: CONFIG.globusApiKey});
       axios.post(CONFIG.loggerUrl, data).then(r => {});
   }
@@ -360,7 +375,7 @@
   }
 
   export default {
-    name: "App",
+    name: "GlobusMeteo",
     components: { LineChart },
     data() {
       return {
@@ -379,15 +394,24 @@
         news_ticker: '',
         news_image: null,
         loader: false,
-        videoSrc: CONFIG.liveCameraSrc
+        videoSrc: CONFIG.liveCameraSrc,
+        authorized: false,
+        app_key: '',
+        device: null,
+        regData: {},
+        errors: {}
       }
     },
     async mounted() {
       this.updateSettings();
       this.setLanguage();
-      this.startMeteo();
-      this.getNews();
-      axios.get(CONFIG.loggerUrl).then(r => console.log(r))
+      if(!this.authorized) {
+        await this.auth();
+      }
+      if (this.authorized) {
+        this.startMeteo();
+        this.getNews();
+      }
     },
     beforeDestroy() {
       clearInterval(this.timer);
@@ -520,7 +544,45 @@
             ww.close(); 
           }, 300);
         }
+      },
+      async auth() {
+        if (typeof DEVICE === 'undefined') {
+          this.device = structuredClone(CONFIG.defaultDevice);
+        } else {
+          this.device = structuredClone(DEVICE)
+        }
+        
+        this.loader = true;
+        try {
+          const response = await axios(CONFIG.regUrl + '/' + this.device.uuid + '/' + CONFIG.appId);
+          this.regData = response.data?.regData;
+        } catch (error) {
+          console.error(this._t('Error fetching weather data:'), error);
+        }
+        this.loader = false;
+        this.authorized = !isEmpty(this.regData?.customer);
+      },
+      async register() {
+        if(!!this.app_key && this.device?.uuid) {
+          try {
+          this.errors = {};
+          let url = CONFIG.regUrl + '/' + CONFIG.appId;
+          let response = await axios.put(url, {
+            app_key: this.app_key,
+            device_uuid: this.device.uuid,
+            device_serial: this.device.serial,
+            app_id: CONFIG.appId
+          });
+          await this.auth();
+          if (this.authorized) {
+            this.startMeteo();
+            this.getNews();
+          }
+        } catch(error)  {
+          this.errors = findOrFail(error, 'response.data.errors');
+        }
       }
+     }
     },
     computed: {
       temperature_out() {
