@@ -353,9 +353,7 @@
   const WEATHER_UPDATES_INTERVAL = CONFIG.weatherUpdatesInterval;
 
   const  onDeviceReady = () => {
-      const DEVICE = structuredClone(device);
-      let data = Object.assign(device, {action: 'view', api_key: CONFIG.globusApiKey});
-      axios.post(CONFIG.loggerUrl, data).then(r => {});
+    STORAGE.setItem('device', JSON.stringify(device));
   }
   document.addEventListener("deviceready", onDeviceReady, false);
 
@@ -474,6 +472,7 @@
         this.saveSettings();
       },
       updateSettings() {
+        this.device = JSON.parse(STORAGE.getItem('device'));
         let savedSettings = JSON.parse(STORAGE.getItem("localSettings"));
         if (isEmpty(savedSettings)) {
           this.saveSettings();
@@ -546,14 +545,12 @@
         }
       },
       async auth() {
-        if (typeof DEVICE === 'undefined') {
+        if (isEmpty(this.device)) {
           this.device = structuredClone(CONFIG.defaultDevice);
-        } else {
-          this.device = structuredClone(DEVICE)
         }
-        
         this.loader = true;
         try {
+          this.log('auth');
           const response = await axios(CONFIG.regUrl + '/' + this.device.uuid + '/' + CONFIG.appId);
           this.regData = response.data?.regData;
         } catch (error) {
@@ -565,6 +562,7 @@
       async register() {
         if(!!this.app_key && this.device?.uuid) {
           try {
+          this.log('register');
           this.errors = {};
           let url = CONFIG.regUrl + '/' + CONFIG.appId;
           let response = await axios.put(url, {
@@ -582,6 +580,10 @@
           this.errors = findOrFail(error, 'response.data.errors');
         }
       }
+     },
+    log(action) {
+      let data = Object.assign(this.device, {action: action, api_key: CONFIG.globusApiKey});
+      axios.post(CONFIG.loggerUrl, data).then(r => {});
      }
     },
     computed: {
