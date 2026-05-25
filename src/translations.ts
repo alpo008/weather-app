@@ -42,7 +42,8 @@ const translations = {
         "Yearly" : "За год",
         "Your browser does not support frames" : "Ваш браузер не поддерживает фреймы",
         "%": "%",
-        "℃": "℃"
+        "℃": "℃",
+        "This application is provided 'as is'. The developer is not liable for any direct or indirect damages arising from the use or inability to use this application. We do not guarantee that the application will function uninterrupted or error-free" : "Данное приложение предоставляется на условиях 'как есть' (as is). Разработчик не несет ответственности за любые прямые или косвенные убытки, возникшие в результате использования или невозможности использования данного приложения. Мы не гарантируем, что приложение будет работать бесперебойно или без ошибок"
     }
   };
 export default translations;

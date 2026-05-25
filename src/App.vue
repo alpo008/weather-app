@@ -311,7 +311,7 @@
       </v-card>
 
       <v-card v-if="!authorized">
-        <v-form @submit.prevent="register" class="mt-14">
+        <v-form @submit.prevent="register" class="mt-14 text-center">
           <p class="font-weight-black text-center">{{ _t('Application registration') }}</p>
           <v-text-field 
           :label="_t('Application key')"
@@ -320,8 +320,11 @@
             :error-messages="errors.app_key"
           >           
           </v-text-field>
-          <v-btn class="mt-2" type="submit" block> {{ _t('Register') }}</v-btn>
+          <v-btn class="mt-2" type="submit"> {{ _t('Register') }}</v-btn>
         </v-form>
+        <p class="pa-6">
+          {{ _t("This application is provided 'as is'. The developer is not liable for any direct or indirect damages arising from the use or inability to use this application. We do not guarantee that the application will function uninterrupted or error-free") }}. 
+        </p>
       </v-card>
       <v-overlay
         :model-value="loader"
