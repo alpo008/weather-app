@@ -5,7 +5,7 @@
     </div>
     <div class="weather" v-if="is_ready">
         <img src="./assets/globus.png" alt="" class ="glogo">
-        <a href="https://link-to-website" class ="qr-code">
+        <a :href="link_to_website" class ="qr-code">
           <img src="./assets/qr-code.png" alt="" height="70">
         </a>
         <h2>{{ _t('Our meteostation') }}</h2> 
@@ -197,7 +197,7 @@
 
 <script lang="ts">
   import axios from "axios";
-  import REQUEST_PARAMS from "./request_params.ts";
+  import CONFIG from "./config.ts";
   import TRANSLATIONS from "./translations.ts";
 
 export default {
@@ -222,8 +222,8 @@ export default {
   methods: {
     async getWxData() {
       try {
-        const response = await axios(REQUEST_PARAMS);
-        this.wxData = response.data.data;
+        const response = await axios.get(CONFIG.weatherUrl);
+        this.wxData = response.data?.all?.data;
         this.updated_at = new Date().toLocaleTimeString();
         this.is_ready = true;
       } catch (error) {
@@ -388,6 +388,9 @@ export default {
         return this.updated_at;
       }
       return this.updated_at.slice(0, -3);
+    },
+    link_to_website() {
+      return CONFIG.siteUrl;
     }
   }
 }
