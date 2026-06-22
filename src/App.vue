@@ -311,20 +311,34 @@
       </v-card>
 
       <v-card v-if="!authorized">
-        <v-form @submit.prevent="register" class="mt-14 text-center">
-          <p class="font-weight-black text-center">{{ _t('Application registration') }}</p>
-          <v-text-field 
-          :label="_t('Application key')"
-            type="text"
-            v-model="app_key"
-            :error-messages="errors.app_key"
-          >           
-          </v-text-field>
-          <v-btn class="mt-2" type="submit"> {{ _t('Register') }}</v-btn>
-        </v-form>
-        <p class="pa-6">
-          {{ _t("This application is provided 'as is'. The developer is not liable for any direct or indirect damages arising from the use or inability to use this application. We do not guarantee that the application will function uninterrupted or error-free") }}. 
-        </p>
+        <div v-if="!onLine" class="pa-5">
+          <v-card
+            variant="elevated"
+            class="mx-auto"
+            :subtitle="_t('Please check internet connection and restart app')"
+            :title="_t('Offline')"
+          >
+            <template v-slot:actions>
+              <v-btn :text="_t('Close')" @click="switchOff"></v-btn>
+            </template>
+          </v-card>
+        </div>
+        <div v-else>
+          <v-form @submit.prevent="register" class="mt-14 text-center">
+            <p class="font-weight-black text-center">{{ _t('Application registration') }}</p>
+            <v-text-field 
+            :label="_t('Application key')"
+              type="text"
+              v-model="app_key"
+              :error-messages="errors.app_key"
+            >           
+            </v-text-field>
+            <v-btn class="mt-2" type="submit"> {{ _t('Register') }}</v-btn>
+          </v-form>
+          <p class="pa-6">
+            {{ _t("This application is provided 'as is'. The developer is not liable for any direct or indirect damages arising from the use or inability to use this application. We do not guarantee that the application will function uninterrupted or error-free") }}. 
+          </p>
+        </div>
       </v-card>
       <v-overlay
         :model-value="loader"
@@ -400,18 +414,22 @@
         app_key: '',
         device: null,
         regData: {},
-        errors: {}
+        errors: {},
+        onLine: false
       }
     },
     async mounted() {
       this.updateSettings();
       this.setLanguage();
-      if(!this.authorized) {
-        await this.auth();
-      }
-      if (this.authorized) {
-        this.startMeteo();
-        this.getNews();
+      this.onLine = window.navigator.onLine;
+      if (this.onLine) {
+        if(!this.authorized) {
+          await this.auth();
+        }
+        if (this.authorized) {
+          this.startMeteo();
+          this.getNews();
+        }
       }
     },
     beforeDestroy() {
